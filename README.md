@@ -47,7 +47,8 @@ Couchpenter setup file is a just a simple JSON file:
 
 Databases property specifies the name of the databases that should exist in CouchDB. If the database does not exist, then it will be created.
 
-Documents property TODO
+Documents property specifies a mapping between the database and the documents that should exist in that database. If the document does not exist, then it will be created. If it already exists, then it will be updated.
+The document value can either be an object, or a file path string containing the JSON document.
 
 Colophon
 --------
