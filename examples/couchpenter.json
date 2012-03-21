@@ -1,0 +1,23 @@
+{
+  "databases": [ "db1", "db2", "db3" ],
+  "documents": {
+    "db1": [
+      { "_id": "doc1", "foo": "bar" },
+      {
+        "_id": "_design/doc3",
+        "language": "javascript",
+        "views": {}
+      },
+      "blah/haha"
+    ],
+    "_replicators": [
+      {
+        "_id": "replicator1",
+        "source": "http://user:pass@host:port/dbremote",
+        "target": "dblocal",
+        "continuous": true,
+        "max_replication_retry_count": "infinity"
+      }
+    ]
+  }
+}
