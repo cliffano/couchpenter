@@ -11,6 +11,7 @@
   "bin": {
     "couchtato": "./bin/couchpenter"
   },
+  "main": "./lib/couchpenter",
   "repository": {
     "type": "git",
     "url": "http://github.com/cliffano/couchpenter.git"
