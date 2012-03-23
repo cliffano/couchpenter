@@ -29,30 +29,32 @@ Programmatically:
 Configuration
 -------------
 
-Couchpenter setup file is a just a simple JSON file:
+Couchpenter setup file is a just a simple JSON file containing:
 
     {
-       "databases": ["db1", "db2", "db3" ],
-       "documents": {
-       	 "db1": [
-       	   { "_id": "doc1", "foo": "bar" },
-       	   { "_id": "doc2", "foo": "bar" },
-       	   "path/to/doc3file.json"
-       	 ],
-       	 "db2": [
-           { "_id": "doc4", "foo": "bar" },
-           "path/to/modulename"
-       	 ]
-       }
+     	"db1": [
+     	  { "_id": "doc1", "foo": "bar" },
+     	  { "_id": "doc2", "foo": "bar" },
+     	  "path/to/doc3file.json"
+     	],
+     	"db2": [
+        { "_id": "doc4", "foo": "bar" },
+        "path/to/modulename"
+     	],
+      "db3": []
     }
 
-Databases property specifies the name of the databases that should exist in CouchDB. If the database does not exist, then it will be created.
+Property keys are the names of the databases that should exist in CouchDB. If a database does not exist, it will then be created.
 
-Documents property specifies a mapping between the database and the documents that should exist in that database. If the document does not exist, then it will be created. If it already exists, then it will be updated.
-The document value can be:
+Property values are the documents that should exist in each database. If the document does not exist, it will then be created. If it already exists, it will then be updated.
+
+A document can be represented as:
+
 * an object
 * a file path string containing a JSON document, file name must end with .json
-* a module path string, path must be relative to current directory if it's used from command-line, or relative to setUp() moduleDir if it's used programmatically
+* a module path string
+
+Paths are relative to current directory if it's used from command-line, or relative to setUp() dir if it's used programmatically.
 
 Colophon
 --------
