@@ -1,4 +1,7 @@
-### 0.0.3 (SNAPSHOT)
+### 0.0.4 (SNAPSHOT)
+*
+
+### 0.0.3
 * Fix executable binary name.
 
 ### 0.0.2
