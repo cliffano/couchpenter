@@ -9,7 +9,7 @@
   "homepage": "http://github.com/cliffano/couchpenter",
   "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
   "bin": {
-    "couchtato": "./bin/couchpenter"
+    "couchpenter": "./bin/couchpenter"
   },
   "main": "./lib/couchpenter",
   "repository": {
