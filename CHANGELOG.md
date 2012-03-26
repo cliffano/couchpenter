@@ -1,4 +1,7 @@
-### 0.0.4 (SNAPSHOT)
+### 0.0.5 (SNAPSHOT)
+* 
+
+### 0.0.4 
 * Fix bulk document fetch to work with CouchDB 1.1.1 .
 
 ### 0.0.3
