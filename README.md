@@ -19,6 +19,10 @@ Set up databases and documents:
 
     couchpenter setup -u http://user:pass@localhost:5984 -f couchpenter.json
 
+Tear down databases:
+
+    couchpenter teardown -u http://user:pass@localhost:5984 -f couchpenter.json
+
 Programmatically:
 
     var couchpenter = new require('couchpenter').Couchpenter();
