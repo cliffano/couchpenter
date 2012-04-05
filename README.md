@@ -25,9 +25,13 @@ Tear down databases:
 
 Programmatically:
 
-    var couchpenter = new require('couchpenter').Couchpenter();
-    couchpenter.setUp('http://user:pass@localhost:5984', 'couchpenter.json', process.cwd(), function (err) {
-      // do something
+    var couchpenter = new require('couchpenter').Couchpenter(
+      'http://user:pass@localhost:5984',
+      'couchpenter.json',
+      process.cwd()
+    );
+    couchpenter.setUp(function (err) {
+      // handle error
     });
 
 Configuration
