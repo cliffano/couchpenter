@@ -1,5 +1,6 @@
 ### 0.0.5 (SNAPSHOT)
 * Use cly for config, init, and exit handling
+* Add teardown target to delete databases
 
 ### 0.0.4 
 * Fix bulk document fetch to work with CouchDB 1.1.1
