@@ -15,13 +15,20 @@ Create setup file example:
 
     couchpenter init
 
-Set up databases and documents:
+Execute a command against a CouchDB URL with specific Couchpenter configuration file:
 
-    couchpenter setup -u http://user:pass@localhost:5984 -f couchpenter.json
+    couchpenter <target> -u http://user:pass@localhost:5984 -f couchpenter.json
 
-Tear down databases:
+Targets:
 
-    couchpenter teardown -u http://user:pass@localhost:5984 -f couchpenter.json
+<table>
+<tr><td>setup</td><td>Create databases, then create/update documents.</td></tr>
+<tr><td>teardown</td><td>Delete databases.</td></tr>
+<tr><td>setup-db</td><td>Create databases only.</td></tr>
+<tr><td>setup-doc</td><td>Create documents only.</td></tr>
+<tr><td>teardown-db</td><td>Like teardown, delete databases.</td></tr>
+<tr><td>teardown-doc</td><td>Delete documents only.</td></tr>
+</table>
 
 Programmatically:
 

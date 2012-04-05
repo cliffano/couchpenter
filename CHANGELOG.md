@@ -2,6 +2,7 @@
 * Use cly for config, init, and exit handling
 * Add teardown target to delete databases
 * Add setup-db and setup-doc targets
+* Add teardown-db and teardown-doc targets
 
 ### 0.0.4 
 * Fix bulk document fetch to work with CouchDB 1.1.1
