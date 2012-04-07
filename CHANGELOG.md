@@ -1,5 +1,5 @@
 ### 0.0.6 (SNAPSHOT)
-* 
+* Fix setup doc handling when there's no doc to set up
 
 ### 0.0.5
 * Use cly for config, init, and exit handling
