@@ -1,4 +1,7 @@
-### 0.0.6 (SNAPSHOT)
+### 0.0.7 (SNAPSHOT)
+* 
+
+### 0.0.6
 * Fix setup doc handling when there's no doc to set up
 
 ### 0.0.5
