@@ -1,4 +1,7 @@
-### 0.0.5 (SNAPSHOT)
+### 0.0.6 (SNAPSHOT)
+* 
+
+### 0.0.5
 * Use cly for config, init, and exit handling
 * Add teardown target to delete databases
 * Add setup-db and setup-doc targets

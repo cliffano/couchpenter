@@ -5,7 +5,7 @@
     "couchdb",
     "database"
   ],
-  "version": "0.0.5",
+  "version": "0.0.6",
   "homepage": "http://github.com/cliffano/couchpenter",
   "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
   "bin": {
