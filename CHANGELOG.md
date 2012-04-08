@@ -1,5 +1,5 @@
 ### 0.0.7 (SNAPSHOT)
-* 
+* Inspect invalid item object to assist troubleshooting 
 
 ### 0.0.6
 * Fix setup doc handling when there's no doc to set up
