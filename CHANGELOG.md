@@ -1,6 +1,8 @@
 ### 0.0.7 (SNAPSHOT)
 * Inspect invalid item object to assist troubleshooting
 * Fix error handling while retrieving database info
+* Add -d flag to specify the base directory of document path specified in config file
+* Move default arg handling from cli to couchpenter module since the API is exposed programmatically
 
 ### 0.0.6
 * Fix setup doc handling when there's no doc to set up
