@@ -1,4 +1,7 @@
-### 0.0.7 (SNAPSHOT)
+### 0.0.8 (SNAPSHOT)
+* 
+
+### 0.0.7
 * Inspect invalid item object to assist troubleshooting
 * Fix error handling while retrieving database info
 * Add -d flag to specify the base directory of document path specified in config file
