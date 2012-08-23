@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/cliffano/couchpenter.png)](http://travis-ci.org/cliffano/couchpenter)
 Couchpenter [![http://travis-ci.org/cliffano/couchpenter](https://secure.travis-ci.org/cliffano/couchpenter.png?branch=master)](http://travis-ci.org/cliffano/couchpenter)
 -----------
 
