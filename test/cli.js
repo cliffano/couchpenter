@@ -33,7 +33,7 @@ describe('cli', function () {
             config: function (exit) {
               checks.couchpenter_config_exit = exit;
             },
-            do: function (tasks, config, exit) {
+            task: function (tasks, config, exit) {
               checks.couchpenter_do_tasks = tasks;
               checks.couchpenter_do_config = config;
               checks.couchpenter_do_exit = exit;
