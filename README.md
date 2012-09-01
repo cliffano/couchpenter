@@ -23,11 +23,14 @@ Targets:
 
 <table>
 <tr><td>setup</td><td>Create databases, then create/update documents.</td></tr>
-<tr><td>teardown</td><td>Delete databases.</td></tr>
 <tr><td>setup-db</td><td>Create databases only.</td></tr>
 <tr><td>setup-doc</td><td>Create documents only.</td></tr>
-<tr><td>teardown-db</td><td>Like teardown, delete databases.</td></tr>
+<tr><td>teardown</td><td>Delete databases, including documents.</td></tr>
+<tr><td>teardown-db</td><td>Alias for teardown</td></tr>
 <tr><td>teardown-doc</td><td>Delete documents only.</td></tr>
+<tr><td>reset</td><td>Delete then recreate databases and documents.</td></tr>
+<tr><td>reset-db</td><td>Alias for reset</td></tr>
+<tr><td>reset-doc</td><td>Delete then recreate documents only.</td></tr>
 </table>
 
 Programmatically:

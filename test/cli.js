@@ -133,7 +133,7 @@ describe('cli', function () {
 
     it('should contain teardown-db command and delegate to couchpenter do when exec is called', function () {
       mocks.bag_configFile = '{ "foo": "bar" }';
-      checks.bag_parse_commands['teardown-db'].desc.should.equal('Delete databases, including documents');
+      checks.bag_parse_commands['teardown-db'].desc.should.equal('Alias for teardown');
       checks.bag_parse_commands['teardown-db'].options.length.should.equal(3);
       checks.bag_parse_commands['teardown-db'].action({
         url: 'http://localhost:5984/somedb',
@@ -160,6 +160,59 @@ describe('cli', function () {
       checks.couchpenter_dir.should.equal('curr/dir/');
       checks.couchpenter_do_tasks.length.should.equal(1);
       checks.couchpenter_do_tasks[0].should.equal('tearDownDocuments');
+      checks.couchpenter_do_exit.should.be.a('function');
+    });
+
+    it('should contain reset command and delegate to couchpenter do when exec is called', function () {
+      mocks.bag_configFile = '{ "foo": "bar" }';
+      checks.bag_parse_commands.reset.desc.should.equal('Delete then recreate databases and documents');
+      checks.bag_parse_commands.reset.options.length.should.equal(3);
+      checks.bag_parse_commands.reset.action({
+        url: 'http://localhost:5984/somedb',
+        configFile: 'someconfigfile.js',
+        dir: 'curr/dir/'
+      });
+      checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
+      checks.couchpenter_dir.should.equal('curr/dir/');
+      checks.couchpenter_do_tasks.length.should.equal(3);
+      checks.couchpenter_do_tasks[0].should.equal('tearDownDatabases');
+      checks.couchpenter_do_tasks[1].should.equal('setUpDatabases');
+      checks.couchpenter_do_tasks[2].should.equal('setUpDocuments');
+      checks.couchpenter_do_exit.should.be.a('function');
+    });
+
+    it('should contain reset-db command and delegate to couchpenter do when exec is called', function () {
+      mocks.bag_configFile = '{ "foo": "bar" }';
+      checks.bag_parse_commands['reset-db'].desc.should.equal('Alias for reset');
+      checks.bag_parse_commands['reset-db'].options.length.should.equal(3);
+      checks.bag_parse_commands['reset-db'].action({
+        url: 'http://localhost:5984/somedb',
+        configFile: 'someconfigfile.js',
+        dir: 'curr/dir/'
+      });
+      checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
+      checks.couchpenter_dir.should.equal('curr/dir/');
+      checks.couchpenter_do_tasks.length.should.equal(3);
+      checks.couchpenter_do_tasks[0].should.equal('tearDownDatabases');
+      checks.couchpenter_do_tasks[1].should.equal('setUpDatabases');
+      checks.couchpenter_do_tasks[2].should.equal('setUpDocuments');
+      checks.couchpenter_do_exit.should.be.a('function');
+    });
+
+    it('should contain reset-doc command and delegate to couchpenter do when exec is called', function () {
+      mocks.bag_configFile = '{ "foo": "bar" }';
+      checks.bag_parse_commands['reset-doc'].desc.should.equal('Delete then recreate documents only');
+      checks.bag_parse_commands['reset-doc'].options.length.should.equal(3);
+      checks.bag_parse_commands['reset-doc'].action({
+        url: 'http://localhost:5984/somedb',
+        configFile: 'someconfigfile.js',
+        dir: 'curr/dir/'
+      });
+      checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
+      checks.couchpenter_dir.should.equal('curr/dir/');
+      checks.couchpenter_do_tasks.length.should.equal(2);
+      checks.couchpenter_do_tasks[0].should.equal('tearDownDocuments');
+      checks.couchpenter_do_tasks[1].should.equal('setUpDocuments');
       checks.couchpenter_do_exit.should.be.a('function');
     });
 
