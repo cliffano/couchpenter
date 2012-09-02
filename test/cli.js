@@ -26,16 +26,16 @@ describe('cli', function () {
             }
           }
         },
-        './couchpenter': function (url, opts) {
+        './couchpenter': function (url, config, dir) {
           checks.couchpenter_url = url;
-          checks.couchpenter_opts = opts;
+          checks.couchpenter_config = config;
+          checks.couchpenter_dir = dir;
           return {
             config: function (exit) {
               checks.couchpenter_config_exit = exit;
             },
-            task: function (tasks, config, exit) {
+            task: function (tasks, exit) {
               checks.couchpenter_do_tasks = tasks;
-              checks.couchpenter_do_config = config;
               checks.couchpenter_do_exit = exit;
             }
           };
@@ -76,8 +76,8 @@ describe('cli', function () {
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
-      checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_opts.logEnabled.should.equal(true);
+      checks.couchpenter_dir.should.equal('curr/dir/');
+      checks.couchpenter_config.foo.should.equal('bar');
       checks.couchpenter_do_tasks.length.should.equal(2);
       checks.couchpenter_do_tasks[0].should.equal('setUpDatabases');
       checks.couchpenter_do_tasks[1].should.equal('setUpDocuments');
@@ -94,8 +94,8 @@ describe('cli', function () {
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
-      checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_opts.logEnabled.should.equal(true);
+      checks.couchpenter_dir.should.equal('curr/dir/');
+      checks.couchpenter_config.foo.should.equal('bar');
       checks.couchpenter_do_tasks.length.should.equal(1);
       checks.couchpenter_do_tasks[0].should.equal('setUpDatabases');
       checks.couchpenter_do_exit.should.be.a('function');
@@ -111,8 +111,8 @@ describe('cli', function () {
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
-      checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_opts.logEnabled.should.equal(true);
+      checks.couchpenter_dir.should.equal('curr/dir/');
+      checks.couchpenter_config.foo.should.equal('bar');
       checks.couchpenter_do_tasks.length.should.equal(1);
       checks.couchpenter_do_tasks[0].should.equal('setUpDocuments');
       checks.couchpenter_do_exit.should.be.a('function');
@@ -128,8 +128,8 @@ describe('cli', function () {
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
-      checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_opts.logEnabled.should.equal(true);
+      checks.couchpenter_dir.should.equal('curr/dir/');
+      checks.couchpenter_config.foo.should.equal('bar');
       checks.couchpenter_do_tasks.length.should.equal(1);
       checks.couchpenter_do_tasks[0].should.equal('tearDownDatabases');
       checks.couchpenter_do_exit.should.be.a('function');
@@ -145,8 +145,8 @@ describe('cli', function () {
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
-      checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_opts.logEnabled.should.equal(true);
+      checks.couchpenter_dir.should.equal('curr/dir/');
+      checks.couchpenter_config.foo.should.equal('bar');
       checks.couchpenter_do_tasks.length.should.equal(1);
       checks.couchpenter_do_tasks[0].should.equal('tearDownDatabases');
       checks.couchpenter_do_exit.should.be.a('function');
@@ -162,8 +162,8 @@ describe('cli', function () {
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
-      checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_opts.logEnabled.should.equal(true);
+      checks.couchpenter_dir.should.equal('curr/dir/');
+      checks.couchpenter_config.foo.should.equal('bar');
       checks.couchpenter_do_tasks.length.should.equal(1);
       checks.couchpenter_do_tasks[0].should.equal('tearDownDocuments');
       checks.couchpenter_do_exit.should.be.a('function');
@@ -179,8 +179,8 @@ describe('cli', function () {
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
-      checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_opts.logEnabled.should.equal(true);
+      checks.couchpenter_dir.should.equal('curr/dir/');
+      checks.couchpenter_config.foo.should.equal('bar');
       checks.couchpenter_do_tasks.length.should.equal(3);
       checks.couchpenter_do_tasks[0].should.equal('tearDownDatabases');
       checks.couchpenter_do_tasks[1].should.equal('setUpDatabases');
@@ -198,8 +198,8 @@ describe('cli', function () {
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
-      checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_opts.logEnabled.should.equal(true);
+      checks.couchpenter_dir.should.equal('curr/dir/');
+      checks.couchpenter_config.foo.should.equal('bar');
       checks.couchpenter_do_tasks.length.should.equal(3);
       checks.couchpenter_do_tasks[0].should.equal('tearDownDatabases');
       checks.couchpenter_do_tasks[1].should.equal('setUpDatabases');
@@ -217,8 +217,8 @@ describe('cli', function () {
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
-      checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_opts.logEnabled.should.equal(true);
+      checks.couchpenter_dir.should.equal('curr/dir/');
+      checks.couchpenter_config.foo.should.equal('bar');
       checks.couchpenter_do_tasks.length.should.equal(2);
       checks.couchpenter_do_tasks[0].should.equal('tearDownDocuments');
       checks.couchpenter_do_tasks[1].should.equal('setUpDocuments');
