@@ -59,11 +59,11 @@ describe('couchpenter', function () {
           checks.db_config = config;
           checks.db_dir = dir;
           return {
-            foo: function(cb) {
+            foo: function(data, cb) {
               checks.db_foo_call_counts++;
               cb();
             },
-            bar: function(cb) {
+            bar: function(data, cb) {
               checks.db_bar_call_counts++;
               cb();
             }
@@ -78,6 +78,89 @@ describe('couchpenter', function () {
       checks.db_foo_call_counts.should.equal(1);
       checks.db_bar_call_counts.should.equal(1);
     });
+
+    it('should use config keys as database data when a database task is specified', function (done) {
+      mocks.requires = {
+        './db': function (url, config, dir) {
+          return {
+            fooDatabases: function(data, cb) {
+              checks.db_data = data;
+              cb();
+            }
+          };
+        }
+      };
+      couchpenter = new (create(checks, mocks))('http://localhost:5984', { somedb1: [], somedb2: [] });
+      couchpenter.task(['fooDatabases'], function () {
+        done();
+      });
+
+      checks.db_data.length.should.equal(2);
+      checks.db_data[0].should.equal('somedb1');
+      checks.db_data[1].should.equal('somedb2');
+    });
+
+    it('should use config as-is as document data when a document is an object', function (done) {
+      mocks.requires = {
+        './db': function (url, config, dir) {
+          return {
+            fooDocuments: function(data, cb) {
+              checks.db_data = data;
+              cb();
+            }
+          };
+        }
+      };
+      couchpenter = new (create(checks, mocks))('http://localhost:5984', { somedb1: [ { _id: 'id1' } ], somedb2: [ { _id: 'id2' } ] });
+      couchpenter.task(['fooDocuments'], function () {
+        done();
+      });
+      checks.db_data.somedb1[0]['_id'].should.equal('id1');
+      checks.db_data.somedb2[0]['_id'].should.equal('id2');
+    });
+
+    it('should use content of a file when document value is a file name ending with .json', function (done) {
+      mocks['fs_readFileSync_curr/dir/a/b/c/file1.json'] = '{ "_id": "id1" }';
+      mocks['fs_readFileSync_curr/file2.json'] = '{ "_id": "id2" }';
+      mocks.requires = {
+        './db': function (url, config, dir) {
+          return {
+            fooDocuments: function(data, cb) {
+              checks.db_data = data;
+              cb();
+            }
+          };
+        },
+        fs: bag.mock.fs(checks, mocks)
+      };
+      couchpenter = new (create(checks, mocks))('http://localhost:5984', { somedb1: [ 'a/b/c/file1.json' ], somedb2: [ '../file2.json' ] }, 'curr/dir/');
+      couchpenter.task(['fooDocuments'], function () {
+        done();
+      });
+      checks.db_data.somedb1[0]['_id'].should.equal('id1');
+      checks.db_data.somedb2[0]['_id'].should.equal('id2');
+    });
+
+    it('should require module when document value is a string not a .json file name', function (done) {
+      mocks.requires = {
+        './db': function (url, config, dir) {
+          return {
+            fooDocuments: function(data, cb) {
+              checks.db_data = data;
+              cb();
+            }
+          };
+        },
+        'curr/dir/a/b/c/module1': { _id: 'id1' },
+        'curr/module2': { _id: 'id2' }
+      };
+      couchpenter = new (create(checks, mocks))('http://localhost:5984', { somedb1: [ 'a/b/c/module1' ], somedb2: [ '../module2' ] }, 'curr/dir/');
+      couchpenter.task(['fooDocuments'], function () {
+        done();
+      });
+      checks.db_data.somedb1[0]['_id'].should.equal('id1');
+      checks.db_data.somedb2[0]['_id'].should.equal('id2');
+    });
   });
 
   describe('setUp', function () {
@@ -91,11 +174,11 @@ describe('couchpenter', function () {
           checks.db_config = config;
           checks.db_dir = dir;
           return {
-            setUpDatabases: function(cb) {
+            setUpDatabases: function(data, cb) {
               checks.db_setUpDatabases_call_counts++;
               cb();
             },
-            setUpDocuments: function(cb) {
+            setUpDocuments: function(data, cb) {
               checks.db_setUpDocuments_call_counts++;
               cb();
             }
@@ -121,7 +204,7 @@ describe('couchpenter', function () {
           checks.db_config = config;
           checks.db_dir = dir;
           return {
-            tearDownDatabases: function(cb) {
+            tearDownDatabases: function(data, cb) {
               checks.db_tearDownDatabases_call_counts++;
               cb();
             }
