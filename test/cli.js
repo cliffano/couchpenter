@@ -12,6 +12,11 @@ describe('cli', function () {
         bagofholding: {
           cli: {
             exit: bag.cli.exit,
+            exitCb: function (errorCb, successCb) {
+              return function (err, result) {
+                successCb(result);
+              }
+            },
             parse: function (commands, dir) {
               checks.bag_parse_commands = commands;
               checks.bag_parse_dir = dir;
@@ -37,6 +42,7 @@ describe('cli', function () {
             task: function (tasks, exit) {
               checks.couchpenter_do_tasks = tasks;
               checks.couchpenter_do_exit = exit;
+              exit(mocks.task_error, mocks.task_result);
             }
           };
         },
@@ -44,6 +50,7 @@ describe('cli', function () {
         '/somedir/foobar.js': {}
       },
       globals: {
+        console: bag.mock.console(checks, mocks),
         process: bag.mock.process(checks, mocks)
       }
     });
@@ -260,6 +267,22 @@ describe('cli', function () {
       } catch (e) {
       }
       checks.bag_configFile.should.equal('../somefilethatdoesnotexist.js');
+    });
+
+    it('should log task result', function () {
+      mocks.task_result = [{
+        'Created': ['foo', 'db1'],
+        'Ignored': ['db2']
+      }];
+      mocks.bag_configFile = '{ "foo": [], "db1": [], "db2": [] }';
+      checks.bag_parse_commands.setup.action({
+        url: 'http://localhost:5984/somedb',
+        configFile: 'someconfigfile.js',
+        dir: 'curr/dir/'
+      });
+      checks.console_log_messages.length.should.equal(2);
+      checks.console_log_messages[0].should.equal('Created: foo, db1');
+      checks.console_log_messages[1].should.equal('Ignored: db2');
     });
   });
 });
