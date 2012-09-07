@@ -15,7 +15,7 @@ describe('cli', function () {
             exitCb: function (errorCb, successCb) {
               return function (err, result) {
                 successCb(result);
-              }
+              };
             },
             parse: function (commands, dir) {
               checks.bag_parse_commands = commands;

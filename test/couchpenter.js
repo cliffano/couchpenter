@@ -115,8 +115,8 @@ describe('couchpenter', function () {
       couchpenter.task(['fooDocuments'], function () {
         done();
       });
-      checks.db_data.somedb1[0]['_id'].should.equal('id1');
-      checks.db_data.somedb2[0]['_id'].should.equal('id2');
+      checks.db_data.somedb1[0]._id.should.equal('id1');
+      checks.db_data.somedb2[0]._id.should.equal('id2');
     });
 
     it('should use content of a file when document value is a file name ending with .json', function (done) {
@@ -137,8 +137,8 @@ describe('couchpenter', function () {
       couchpenter.task(['fooDocuments'], function () {
         done();
       });
-      checks.db_data.somedb1[0]['_id'].should.equal('id1');
-      checks.db_data.somedb2[0]['_id'].should.equal('id2');
+      checks.db_data.somedb1[0]._id.should.equal('id1');
+      checks.db_data.somedb2[0]._id.should.equal('id2');
     });
 
     it('should require module when document value is a string not a .json file name', function (done) {
@@ -158,8 +158,8 @@ describe('couchpenter', function () {
       couchpenter.task(['fooDocuments'], function () {
         done();
       });
-      checks.db_data.somedb1[0]['_id'].should.equal('id1');
-      checks.db_data.somedb2[0]['_id'].should.equal('id2');
+      checks.db_data.somedb1[0]._id.should.equal('id1');
+      checks.db_data.somedb2[0]._id.should.equal('id2');
     });
   });
 
