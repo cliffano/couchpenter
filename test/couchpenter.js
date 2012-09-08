@@ -196,6 +196,32 @@ describe('couchpenter', function () {
       checks.db_data.somedb1[0]._id.should.equal('id1');
       checks.db_data.somedb2[0]._id.should.equal('id2');
     });
+
+    it('should prefix database names when option prefix is specified', function (done) {
+      mocks.requires = {
+        './db': function (url, config, dir) {
+          return {
+            fooDocuments: function(data, cb) {
+              checks.db_data = data;
+              cb();
+            }
+          };
+        },
+        'bagofholding': {
+          cli: {
+            readCustomConfigFileSync: function (file) {
+              return '{ "somedb1": [{"_id": "id1"}], "somedb2": [{"_id": "id2"}] }';
+            }
+          }
+        }
+      };
+      couchpenter = new (create(checks, mocks))('http://localhost:5984', "someconfigfile.json", { prefix: 'someprefix' });
+      couchpenter.task(['fooDocuments'], function () {
+        done();
+      });
+      checks.db_data.someprefixsomedb1[0]._id.should.equal('id1');
+      checks.db_data.someprefixsomedb2[0]._id.should.equal('id2');
+    });
   });
 
   describe('setUp', function () {
