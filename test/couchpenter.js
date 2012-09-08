@@ -68,6 +68,13 @@ describe('couchpenter', function () {
               cb();
             }
           };
+        },
+        'bagofholding': {
+          cli: {
+            readCustomConfigFileSync: function (file) {
+              return '{ "somedb1": [], "somedb2": [] }';
+            }
+          }
         }
       };
       couchpenter = new (create(checks, mocks))();
@@ -211,6 +218,13 @@ describe('couchpenter', function () {
               cb();
             }
           };
+        },
+        'bagofholding': {
+          cli: {
+            readCustomConfigFileSync: function (file) {
+              return '{ "somedb1": [], "somedb2": [] }';
+            }
+          }
         }
       };
       couchpenter = new (create(checks, mocks))();
@@ -237,6 +251,13 @@ describe('couchpenter', function () {
               cb();
             }
           };
+        },
+        'bagofholding': {
+          cli: {
+            readCustomConfigFileSync: function (file) {
+              return '{ "somedb1": [], "somedb2": [] }';
+            }
+          }
         }
       };
       couchpenter = new (create(checks, mocks))();
