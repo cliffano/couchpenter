@@ -1,5 +1,6 @@
 ### 0.0.8 (SNAPSHOT)
 * Add reset, reset-db, and reset-doc targets
+* Add prefix option to automatically prefix all database names 
 
 ### 0.0.7
 * Inspect invalid item object to assist troubleshooting

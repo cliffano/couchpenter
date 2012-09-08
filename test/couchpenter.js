@@ -88,9 +88,16 @@ describe('couchpenter', function () {
               cb();
             }
           };
+        },
+        'bagofholding': {
+          cli: {
+            readCustomConfigFileSync: function (file) {
+              return '{ "somedb1": [], "somedb2": [] }';
+            }
+          }
         }
       };
-      couchpenter = new (create(checks, mocks))('http://localhost:5984', { somedb1: [], somedb2: [] });
+      couchpenter = new (create(checks, mocks))('http://localhost:5984', "someconfigfile.json");
       couchpenter.task(['fooDatabases'], function () {
         done();
       });
@@ -109,9 +116,16 @@ describe('couchpenter', function () {
               cb();
             }
           };
+        },
+        'bagofholding': {
+          cli: {
+            readCustomConfigFileSync: function (file) {
+              return '{ "somedb1": [{"_id": "id1"}], "somedb2": [{"_id": "id2"}] }';
+            }
+          }
         }
       };
-      couchpenter = new (create(checks, mocks))('http://localhost:5984', { somedb1: [ { _id: 'id1' } ], somedb2: [ { _id: 'id2' } ] });
+      couchpenter = new (create(checks, mocks))('http://localhost:5984', "someconfigfile.json");
       couchpenter.task(['fooDocuments'], function () {
         done();
       });
@@ -131,9 +145,16 @@ describe('couchpenter', function () {
             }
           };
         },
+        'bagofholding': {
+          cli: {
+            readCustomConfigFileSync: function (file) {
+              return '{ "somedb1": ["a/b/c/file1.json"], "somedb2": ["../file2.json"] }';
+            }
+          }
+        },
         fs: bag.mock.fs(checks, mocks)
       };
-      couchpenter = new (create(checks, mocks))('http://localhost:5984', { somedb1: [ 'a/b/c/file1.json' ], somedb2: [ '../file2.json' ] }, 'curr/dir/');
+      couchpenter = new (create(checks, mocks))('http://localhost:5984', "someconfigfile.json", 'curr/dir/');
       couchpenter.task(['fooDocuments'], function () {
         done();
       });
@@ -151,10 +172,17 @@ describe('couchpenter', function () {
             }
           };
         },
+        'bagofholding': {
+          cli: {
+            readCustomConfigFileSync: function (file) {
+              return '{ "somedb1": ["a/b/c/module1"], "somedb2": ["../module2"] }';
+            }
+          }
+        },
         'curr/dir/a/b/c/module1': { _id: 'id1' },
         'curr/module2': { _id: 'id2' }
       };
-      couchpenter = new (create(checks, mocks))('http://localhost:5984', { somedb1: [ 'a/b/c/module1' ], somedb2: [ '../module2' ] }, 'curr/dir/');
+      couchpenter = new (create(checks, mocks))('http://localhost:5984', "someconfigfile.json", 'curr/dir/');
       couchpenter.task(['fooDocuments'], function () {
         done();
       });
