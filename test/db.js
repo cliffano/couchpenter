@@ -1,4 +1,5 @@
-var bag = require('bagofholding'),
+var _ = require('underscore'),
+  bag = require('bagofholding'),
   sandbox = require('sandboxed-module'),
   should = require('should'),
   checks, mocks,
@@ -42,7 +43,8 @@ describe('db', function () {
               checks.nano_use_dbname = dbName;
               var count = 0;
               return {
-                bulk: function (opts, cb) {
+                bulk: function (docs, opts, cb) {
+                  checks.nano_bulk_docs = docs;
                   checks.nano_bulk_opts = opts;
                   cb(
                     mocks.nano_bulk_err, 
@@ -50,7 +52,7 @@ describe('db', function () {
                   );                  
                 },
                 fetch: function (keys, opts, cb) {
-                  checks.nano_fetch_keys = keys;
+                  checks.nano_fetch_keys = keys.keys;
                   checks.nano_fetch_opts = opts;
                   cb(
                     mocks.nano_fetch_err, 
@@ -168,10 +170,10 @@ describe('db', function () {
       checks.nano_destroy_dbNames[0].should.equal('db1');
       checks.nano_destroy_dbNames[1].should.equal('db2');
       should.not.exist(checks.db_teardowndatabases_err);
-      var createdResults = checks.db_teardowndatabases_results['Deleted databases'];
-      createdResults.length.should.equal(2);
-      createdResults[0].should.equal('db1');
-      createdResults[1].should.equal('db2');
+      var deletedResults = checks.db_teardowndatabases_results['Deleted databases'];
+      deletedResults.length.should.equal(2);
+      deletedResults[0].should.equal('db1');
+      deletedResults[1].should.equal('db2');
       var ignoredResults = checks.db_teardowndatabases_results['Ignored databases (do not exist)'];
       ignoredResults.length.should.equal(0);
     });
@@ -179,17 +181,62 @@ describe('db', function () {
 
   describe('setUpDocuments', function () {
 
+    it('should pass error when db fetch gives an error', function (done) {
+      mocks.nano_fetch_err = new Error('someerror');
+      db = new (create(checks, mocks))('http://localhost:5984');
+      db.setUpDocuments({ 'db1': [], 'db2': [] }, function (err, results) {
+        checks.db_setupdocuments_err = err;
+        checks.db_setupdocuments_results = results;
+        done();
+      });
+      checks.db_setupdocuments_err.message.should.equal('someerror');
+      _.keys(checks.db_setupdocuments_results).length.should.equal(0);
+    });
+/* commented out until https://github.com/felixge/node-sandboxed-module/issues/13 is resolved
+ * that issue caused tasks array being passed to async.parallel to have x.constructor === Array to be false
+ * and hence messing up results structure (object instead of array)
     it('should create inexisting documents', function () {
-
+      mocks.nano_fetch_results = [{
+        rows: []
+      }];
+      db = new (create(checks, mocks))('http://localhost:5984');
+      db.setUpDocuments({ 'db1': [{ _id: 'doc1' }, { _id: 'doc2' }] }, function (err, results) {
+        checks.db_setupdocuments_err = err;
+        checks.db_setupdocuments_results = results;
+        //done();
+      });
+      should.not.exist(checks.db_setupdocuments_err);
+      checks.nano_fetch_keys.length.should.equal(2);
+      checks.nano_fetch_keys[0].should.equal('doc1');
+      checks.nano_fetch_keys[1].should.equal('doc2');
+      var createdResults = checks.db_setupdocuments_results['Created documents in database db1'];
+      createdResults.length.should.equal(2);
+      createdResults[0].should.equal('doc1');
+      createdResults[1].should.equal('doc2');
+      var ignoredResults = checks.db_setupdocuments_results['Updated documents (already exist) in database db1'];
+      ignoredResults.length.should.equal(0);
     });
 
     it('should update existing documents', function () {
 
     });
+*/
   });
 
   describe('tearDownDocuments', function () {
 
+    it('should pass error when db fetch gives an error', function (done) {
+      mocks.nano_fetch_err = new Error('someerror');
+      db = new (create(checks, mocks))('http://localhost:5984');
+      db.tearDownDocuments({ 'db1': [], 'db2': [] }, function (err, results) {
+        checks.db_teardowndocuments_err = err;
+        checks.db_teardowndocuments_results = results;
+        done();
+      });
+      checks.db_teardowndocuments_err.message.should.equal('someerror');
+      _.keys(checks.db_teardowndocuments_results).length.should.equal(0);
+    });
+/*
     it('should ignore inexisting documents', function () {
 
     });
@@ -197,6 +244,8 @@ describe('db', function () {
     it('should delete existing documents', function () {
 
     });
+*/
   });
+
 });
  
