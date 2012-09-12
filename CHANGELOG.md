@@ -1,5 +1,5 @@
-### 0.0.9 (SNAPSHOT)
-*
+### 0.1.0 (SNAPSHOT)
+* Re-release 0.0.8 as 0.1.0 due to interface change
 
 ### 0.0.8
 * Add reset, reset-db, and reset-doc targets; add Couchpenter#reset method
