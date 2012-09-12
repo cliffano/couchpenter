@@ -1,4 +1,7 @@
-### 0.0.8 (SNAPSHOT)
+### 0.0.9 (SNAPSHOT)
+*
+
+### 0.0.8
 * Add reset, reset-db, and reset-doc targets; add Couchpenter#reset method
 * Add prefix option to automatically prefix all database names
 * Change Couchpenter constructor from (url, setupFile, dir) to (url, opts), with setupFile and dir specified in opts
