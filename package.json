@@ -3,7 +3,9 @@
   "description": "CouchDB database and document setup tool.",
   "keywords": [
     "couchdb",
-    "database"
+    "database",
+    "documents",
+    "setup"
   ],
   "version": "0.0.9",
   "homepage": "http://github.com/cliffano/couchpenter",
