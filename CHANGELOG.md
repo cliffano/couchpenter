@@ -1,5 +1,5 @@
 ### 0.0.8 (SNAPSHOT)
-* Add reset, reset-db, and reset-doc targets
+* Add reset, reset-db, and reset-doc targets; add Couchpenter#reset method
 * Add prefix option to automatically prefix all database names 
 
 ### 0.0.7

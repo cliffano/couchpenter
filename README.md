@@ -72,10 +72,16 @@ Programmatically:
       { dir: '../some/dir/' }
     );
 
+    // set up databases and documents
     couchpenter.setUp(function (err, result) {
     });
 
+    // delete databases and documents
     couchpenter.tearDown(function (err, result) {
+    });
+
+    // delete databases and documents, then set up databases and documents
+    couchpenter.reset(function (err, result) {
     });
 
 Configuration

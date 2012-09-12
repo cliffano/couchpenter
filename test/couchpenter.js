@@ -293,5 +293,49 @@ describe('couchpenter', function () {
       checks.db_tearDownDatabases_call_counts.should.equal(1);
     });
   });
+
+  describe('reset', function () {
+
+    it('should execute db task functions', function (done) {
+      checks.db_tearDownDatabases_call_counts = 0;
+      checks.db_setUpDatabases_call_counts = 0;
+      checks.db_setUpDocuments_call_counts = 0;
+      mocks.requires = {
+        './db': function (url, config, dir) {
+          checks.db_url = url;
+          checks.db_config = config;
+          checks.db_dir = dir;
+          return {
+            setUpDatabases: function(data, cb) {
+              checks.db_setUpDatabases_call_counts++;
+              cb();
+            },
+            setUpDocuments: function(data, cb) {
+              checks.db_setUpDocuments_call_counts++;
+              cb();
+            },
+            tearDownDatabases: function(data, cb) {
+              checks.db_tearDownDatabases_call_counts++;
+              cb();
+            }
+          };
+        },
+        'bagofholding': {
+          cli: {
+            readCustomConfigFileSync: function (file) {
+              return '{ "somedb1": [], "somedb2": [] }';
+            }
+          }
+        }
+      };
+      couchpenter = new (create(checks, mocks))();
+      couchpenter.reset(function () {
+        done();
+      });
+      checks.db_setUpDatabases_call_counts.should.equal(1);
+      checks.db_setUpDocuments_call_counts.should.equal(1);
+      checks.db_tearDownDatabases_call_counts.should.equal(1);
+    });
+  });
 });
  
