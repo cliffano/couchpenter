@@ -17,7 +17,7 @@ Installation
 Usage
 -----
 
-Create a sample couchpenter.json setup file example:
+Create a sample couchpenter.json setup file:
 
     couchpenter init
 

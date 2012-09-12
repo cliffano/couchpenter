@@ -28,8 +28,8 @@ describe('cli', function () {
           checks.couchpenter_configFile = configFile;
           checks.couchpenter_opts = opts;
           return {
-            config: function (exit) {
-              checks.couchpenter_config_exit = exit;
+            init: function (exit) {
+              checks.couchpenter_init_exit = exit;
             },
             task: function (tasks, exit) {
               checks.couchpenter_do_tasks = tasks;
@@ -59,10 +59,10 @@ describe('cli', function () {
 
   describe('exec', function () {
 
-    it('should contain config command and delegate to couchpenter config when exec is called', function () {
-      checks.bag_parse_commands.config.desc.should.equal('Create sample configuration file');
-      checks.bag_parse_commands.config.action();
-      checks.couchpenter_config_exit.should.be.a('function');
+    it('should contain init command and delegate to couchpenter init when exec is called', function () {
+      checks.bag_parse_commands.init.desc.should.equal('Create sample setup file');
+      checks.bag_parse_commands.init.action();
+      checks.couchpenter_init_exit.should.be.a('function');
     });
 
     it('should contain setup command and delegate to couchpenter do when exec is called', function () {

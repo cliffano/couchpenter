@@ -25,9 +25,9 @@ describe('couchpenter', function () {
     mocks = {};
   });
 
-  describe('config', function () {
+  describe('init', function () {
 
-    it('should copy sample couchpenter.js file to current directory when config is called', function (done) {
+    it('should copy sample couchpenter.js file to current directory when init is called', function (done) {
       mocks.requires = {
         'fs.extra': {
           copy: function (source, target, cb) {
@@ -38,13 +38,13 @@ describe('couchpenter', function () {
         }
       };
       couchpenter = new (create(checks, mocks))();
-      couchpenter.config(function () {
+      couchpenter.init(function () {
         done();
       }); 
       checks.fsx_copy_source.should.equal('/somedir/couchpenter/examples/couchpenter.json');
       checks.fsx_copy_target.should.equal('couchpenter.json');
       checks.console_log_messages.length.should.equal(1);
-      checks.console_log_messages[0].should.equal('Creating sample configuration file: couchpenter.json');
+      checks.console_log_messages[0].should.equal('Creating sample setup file: couchpenter.json');
     });
   });
 
