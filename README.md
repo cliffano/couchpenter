@@ -54,21 +54,19 @@ Programmatically:
     // use custom setup file
     var couchpenter = new require('couchpenter').Couchpenter(
       'http://user:pass@localhost:5984',
-      'somecouchpenter.json'
+      { setupFile: 'somecouchpenter.json' }
     );
 
     // prefix the database names
     // handy for running multiple tests in parallel without interrupting each other
     var couchpenter = new require('couchpenter').Couchpenter(
       'http://user:pass@localhost:5984',
-      'somecouchpenter.json',
       { prefix: 'testrun123_' }
     );
 
     // specify a base directory for the documents specified in setup file
     var couchpenter = new require('couchpenter').Couchpenter(
       'http://user:pass@localhost:5984',
-      'somecouchpenter.json',
       { dir: '../some/dir/' }
     );
 

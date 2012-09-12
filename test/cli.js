@@ -23,9 +23,8 @@ describe('cli', function () {
             }
           }
         },
-        './couchpenter': function (url, configFile, opts) {
+        './couchpenter': function (url, opts) {
           checks.couchpenter_url = url;
-          checks.couchpenter_configFile = configFile;
           checks.couchpenter_opts = opts;
           return {
             init: function (exit) {
@@ -70,12 +69,12 @@ describe('cli', function () {
       checks.bag_parse_commands.setup.options.length.should.equal(3);
       checks.bag_parse_commands.setup.action({
         url: 'http://localhost:5984/somedb',
-        configFile: 'someconfigfile.js',
+        setupFile: 'someconfigfile.js',
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
       checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_configFile.should.equal('someconfigfile.js');
+      checks.couchpenter_opts.setupFile.should.equal('someconfigfile.js');
       checks.couchpenter_do_tasks.length.should.equal(2);
       checks.couchpenter_do_tasks[0].should.equal('setUpDatabases');
       checks.couchpenter_do_tasks[1].should.equal('setUpDocuments');
@@ -87,12 +86,12 @@ describe('cli', function () {
       checks.bag_parse_commands['setup-db'].options.length.should.equal(3);
       checks.bag_parse_commands['setup-db'].action({
         url: 'http://localhost:5984/somedb',
-        configFile: 'someconfigfile.js',
+        setupFile: 'someconfigfile.js',
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
       checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_configFile.should.equal('someconfigfile.js');
+      checks.couchpenter_opts.setupFile.should.equal('someconfigfile.js');
       checks.couchpenter_do_tasks.length.should.equal(1);
       checks.couchpenter_do_tasks[0].should.equal('setUpDatabases');
       checks.couchpenter_do_exit.should.be.a('function');
@@ -103,12 +102,12 @@ describe('cli', function () {
       checks.bag_parse_commands['setup-doc'].options.length.should.equal(3);
       checks.bag_parse_commands['setup-doc'].action({
         url: 'http://localhost:5984/somedb',
-        configFile: 'someconfigfile.js',
+        setupFile: 'someconfigfile.js',
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
       checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_configFile.should.equal('someconfigfile.js');
+      checks.couchpenter_opts.setupFile.should.equal('someconfigfile.js');
       checks.couchpenter_do_tasks.length.should.equal(1);
       checks.couchpenter_do_tasks[0].should.equal('setUpDocuments');
       checks.couchpenter_do_exit.should.be.a('function');
@@ -119,12 +118,12 @@ describe('cli', function () {
       checks.bag_parse_commands.teardown.options.length.should.equal(3);
       checks.bag_parse_commands.teardown.action({
         url: 'http://localhost:5984/somedb',
-        configFile: 'someconfigfile.js',
+        setupFile: 'someconfigfile.js',
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
       checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_configFile.should.equal('someconfigfile.js');
+      checks.couchpenter_opts.setupFile.should.equal('someconfigfile.js');
       checks.couchpenter_do_tasks.length.should.equal(1);
       checks.couchpenter_do_tasks[0].should.equal('tearDownDatabases');
       checks.couchpenter_do_exit.should.be.a('function');
@@ -135,12 +134,12 @@ describe('cli', function () {
       checks.bag_parse_commands['teardown-db'].options.length.should.equal(3);
       checks.bag_parse_commands['teardown-db'].action({
         url: 'http://localhost:5984/somedb',
-        configFile: 'someconfigfile.js',
+        setupFile: 'someconfigfile.js',
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
       checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_configFile.should.equal('someconfigfile.js');
+      checks.couchpenter_opts.setupFile.should.equal('someconfigfile.js');
       checks.couchpenter_do_tasks.length.should.equal(1);
       checks.couchpenter_do_tasks[0].should.equal('tearDownDatabases');
       checks.couchpenter_do_exit.should.be.a('function');
@@ -151,12 +150,12 @@ describe('cli', function () {
       checks.bag_parse_commands['teardown-doc'].options.length.should.equal(3);
       checks.bag_parse_commands['teardown-doc'].action({
         url: 'http://localhost:5984/somedb',
-        configFile: 'someconfigfile.js',
+        setupFile: 'someconfigfile.js',
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
       checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_configFile.should.equal('someconfigfile.js');
+      checks.couchpenter_opts.setupFile.should.equal('someconfigfile.js');
       checks.couchpenter_do_tasks.length.should.equal(1);
       checks.couchpenter_do_tasks[0].should.equal('tearDownDocuments');
       checks.couchpenter_do_exit.should.be.a('function');
@@ -167,12 +166,12 @@ describe('cli', function () {
       checks.bag_parse_commands.reset.options.length.should.equal(3);
       checks.bag_parse_commands.reset.action({
         url: 'http://localhost:5984/somedb',
-        configFile: 'someconfigfile.js',
+        setupFile: 'someconfigfile.js',
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
       checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_configFile.should.equal('someconfigfile.js');
+      checks.couchpenter_opts.setupFile.should.equal('someconfigfile.js');
       checks.couchpenter_do_tasks.length.should.equal(3);
       checks.couchpenter_do_tasks[0].should.equal('tearDownDatabases');
       checks.couchpenter_do_tasks[1].should.equal('setUpDatabases');
@@ -185,12 +184,12 @@ describe('cli', function () {
       checks.bag_parse_commands['reset-db'].options.length.should.equal(3);
       checks.bag_parse_commands['reset-db'].action({
         url: 'http://localhost:5984/somedb',
-        configFile: 'someconfigfile.js',
+        setupFile: 'someconfigfile.js',
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
       checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_configFile.should.equal('someconfigfile.js');
+      checks.couchpenter_opts.setupFile.should.equal('someconfigfile.js');
       checks.couchpenter_do_tasks.length.should.equal(3);
       checks.couchpenter_do_tasks[0].should.equal('tearDownDatabases');
       checks.couchpenter_do_tasks[1].should.equal('setUpDatabases');
@@ -203,12 +202,12 @@ describe('cli', function () {
       checks.bag_parse_commands['reset-doc'].options.length.should.equal(3);
       checks.bag_parse_commands['reset-doc'].action({
         url: 'http://localhost:5984/somedb',
-        configFile: 'someconfigfile.js',
+        setupFile: 'someconfigfile.js',
         dir: 'curr/dir/'
       });
       checks.couchpenter_url.should.equal('http://localhost:5984/somedb');
       checks.couchpenter_opts.dir.should.equal('curr/dir/');
-      checks.couchpenter_configFile.should.equal('someconfigfile.js');
+      checks.couchpenter_opts.setupFile.should.equal('someconfigfile.js');
       checks.couchpenter_do_tasks.length.should.equal(2);
       checks.couchpenter_do_tasks[0].should.equal('tearDownDocuments');
       checks.couchpenter_do_tasks[1].should.equal('setUpDocuments');
@@ -222,7 +221,7 @@ describe('cli', function () {
       }];
       checks.bag_parse_commands.setup.action({
         url: 'http://localhost:5984/somedb',
-        configFile: 'someconfigfile.js',
+        setupFile: 'someconfigfile.js',
         dir: 'curr/dir/'
       });
       checks.console_log_messages.length.should.equal(2);

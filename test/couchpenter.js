@@ -104,7 +104,7 @@ describe('couchpenter', function () {
           }
         }
       };
-      couchpenter = new (create(checks, mocks))('http://localhost:5984', "someconfigfile.json");
+      couchpenter = new (create(checks, mocks))('http://localhost:5984', { setupFile: "someconfigfile.json" });
       couchpenter.task(['fooDatabases'], function () {
         done();
       });
@@ -132,7 +132,7 @@ describe('couchpenter', function () {
           }
         }
       };
-      couchpenter = new (create(checks, mocks))('http://localhost:5984', "someconfigfile.json");
+      couchpenter = new (create(checks, mocks))('http://localhost:5984', { setupFile: "someconfigfile.json" });
       couchpenter.task(['fooDocuments'], function () {
         done();
       });
@@ -161,7 +161,7 @@ describe('couchpenter', function () {
         },
         fs: bag.mock.fs(checks, mocks)
       };
-      couchpenter = new (create(checks, mocks))('http://localhost:5984', "someconfigfile.json", 'curr/dir/');
+      couchpenter = new (create(checks, mocks))('http://localhost:5984', { setupFile: "someconfigfile.json", dir: 'curr/dir/' });
       couchpenter.task(['fooDocuments'], function () {
         done();
       });
@@ -189,7 +189,7 @@ describe('couchpenter', function () {
         'curr/dir/a/b/c/module1': { _id: 'id1' },
         'curr/module2': { _id: 'id2' }
       };
-      couchpenter = new (create(checks, mocks))('http://localhost:5984', "someconfigfile.json", 'curr/dir/');
+      couchpenter = new (create(checks, mocks))('http://localhost:5984', { setupFile: "someconfigfile.json", dir: 'curr/dir/' });
       couchpenter.task(['fooDocuments'], function () {
         done();
       });
@@ -215,7 +215,7 @@ describe('couchpenter', function () {
           }
         }
       };
-      couchpenter = new (create(checks, mocks))('http://localhost:5984', "someconfigfile.json", { prefix: 'someprefix' });
+      couchpenter = new (create(checks, mocks))('http://localhost:5984', { setupFile: "someconfigfile.json", prefix: 'someprefix' });
       couchpenter.task(['fooDocuments'], function () {
         done();
       });
