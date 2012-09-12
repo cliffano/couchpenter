@@ -1,8 +1,13 @@
-[![build status](https://secure.travis-ci.org/cliffano/couchpenter.png)](http://travis-ci.org/cliffano/couchpenter)
 Couchpenter [![http://travis-ci.org/cliffano/couchpenter](https://secure.travis-ci.org/cliffano/couchpenter.png?branch=master)](http://travis-ci.org/cliffano/couchpenter)
 -----------
 
-Couchpenter is CouchDB database and document setup tool.
+Couchpenter is a CouchDB database and document setup tool.
+
+This is handy when you want to create or delete CouchDB databases and documents based on a predefined setup file, either from the command-line or programmatically.
+
+A common usage scenario is to hook up Couchpenter to application start up code, ensuring CouchDB to have the required databases along with any data, design, and replication documents, before the server starts listening.
+
+Another usage is for integration testing, either from test libraries (e.g. Mocha's beforeEach/afterEach), or from a Continuous Integration build pipeline (e.g. resetting the databases prior to running the test suites).
 
 Installation
 ------------
@@ -12,17 +17,22 @@ Installation
 Usage
 -----
 
-Create setup file example:
+Create a sample couchpenter.json setup file example:
 
     couchpenter init
 
-Execute a command against a CouchDB URL with specific Couchpenter configuration file:
+Execute a task against a CouchDB URL using default couchpenter.json setup file:
 
-    couchpenter <target> -u http://user:pass@localhost:5984 -f couchpenter.json
+    couchpenter <task> -u http://user:pass@localhost:5984
 
-Targets:
+Execute a task using custom setup file:
+
+    couchpenter <task> -u http://user:pass@localhost:5984 -f somecouchpenter.json
+
+Tasks:
 
 <table>
+<tr><th>Task</th><th>Description</th></tr>
 <tr><td>setup</td><td>Create databases, then create/update documents.</td></tr>
 <tr><td>setup-db</td><td>Create databases only.</td></tr>
 <tr><td>setup-doc</td><td>Create documents only.</td></tr>
@@ -36,19 +46,42 @@ Targets:
 
 Programmatically:
 
+    // use default couchpenter.json setup file
+    var couchpenter = new require('couchpenter').Couchpenter(
+      'http://user:pass@localhost:5984'
+    );
+
+    // use custom setup file
     var couchpenter = new require('couchpenter').Couchpenter(
       'http://user:pass@localhost:5984',
-      'couchpenter.json',
-      process.cwd()
+      'somecouchpenter.json'
     );
-    couchpenter.setUp(function (err) {
-      // handle error
+
+    // prefix the database names
+    // handy for running multiple tests in parallel without interrupting each other
+    var couchpenter = new require('couchpenter').Couchpenter(
+      'http://user:pass@localhost:5984',
+      'somecouchpenter.json',
+      { prefix: 'testrun123_' }
+    );
+
+    // specify a base directory for the documents specified in setup file
+    var couchpenter = new require('couchpenter').Couchpenter(
+      'http://user:pass@localhost:5984',
+      'somecouchpenter.json',
+      { dir: '../some/dir/' }
+    );
+
+    couchpenter.setUp(function (err, result) {
+    });
+
+    couchpenter.tearDown(function (err, result) {
     });
 
 Configuration
 -------------
 
-Couchpenter setup file is a just a simple JSON file containing:
+Couchpenter setup file is a just a simple JSON file:
 
     {
       "db1": [
@@ -70,15 +103,12 @@ Couchpenter setup file is a just a simple JSON file containing:
             "name": "user",
             "roles": ["_admin"]
           },
-          "continuous": true,
-          "max_replication_retry_count": "infinity"
+          "continuous": true
         }
       }
     }
 
-Property keys are the names of the databases that should exist in CouchDB. If a database does not exist, it will then be created.
-
-Property values are the documents that should exist in each database. If the document does not exist, it will then be created. If it already exists, it will then be updated.
+Property keys are the names of the databases, property values are the documents in each database.
 
 A document can be represented as:
 
@@ -86,9 +116,4 @@ A document can be represented as:
 * a file path string containing a JSON document, file name must end with .json
 * a module path string
 
-Paths are relative to current directory if it's used from command-line, or relative to setUp's dir (process.cwd() in the usage example further above) if it's used programmatically.
-
-Colophon
---------
-
-Follow [@cliffano](http://twitter.com/cliffano) on Twitter.
+Paths are relative to current directory if it's used from command-line, or relative to dir opt if it's used programmatically (defaults to current directory).
