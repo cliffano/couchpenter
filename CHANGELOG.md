@@ -1,4 +1,7 @@
-### 0.1.0 (SNAPSHOT)
+### 0.1.1 (SNAPSHOT)
+*
+
+### 0.1.0
 * Re-release 0.0.8 as 0.1.0 due to interface change
 
 ### 0.0.8
