@@ -86,6 +86,43 @@ describe('couchpenter', function () {
       checks.db_bar_call_counts.should.equal(1);
     });
 
+    it('should not read setup file when db setup object is passed in opts', function (done) {
+      checks.db_foo_call_counts = 0;
+      checks.db_bar_call_counts = 0;
+      checks.readCustomConfigFileSync_counts = 0;
+      mocks.requires = {
+        './db': function (url, config, dir) {
+          checks.db_url = url;
+          checks.db_config = config;
+          checks.db_dir = dir;
+          return {
+            foo: function(data, cb) {
+              checks.db_foo_call_counts++;
+              cb();
+            },
+            bar: function(data, cb) {
+              checks.db_bar_call_counts++;
+              cb();
+            }
+          };
+        },
+        'bagofholding': {
+          cli: {
+            readCustomConfigFileSync: function (file) {
+              checks.readCustomConfigFileSync_counts++;
+              return '{ "somedb1": [], "somedb2": [] }';
+            }
+          }
+        }
+      };
+      couchpenter = new (create(checks, mocks))('http://localhost:5984', { dbSetup: { "somedb1": [], "somedb2": [] } });
+      couchpenter.task(['foo', 'bar'], function () {
+        done();
+      });
+
+      checks.readCustomConfigFileSync_counts.should.equal(0);
+    });
+
     it('should use config keys as database data when a database task is specified', function (done) {
       mocks.requires = {
         './db': function (url, config, dir) {

@@ -57,6 +57,19 @@ Programmatically:
       { setupFile: 'somecouchpenter.json' }
     );
 
+    // use setup object (instead of setup file)
+    var couchpenter = new (require('couchpenter'))(
+      'http://user:pass@localhost:5984',
+      { dbSetup: {
+          "db1": [
+            { "_id": "doc1", "foo": "bar" },
+            { "_id": "doc2", "foo": "bar" },
+            "path/to/doc3file.json"
+          ]
+        }
+      }
+    );
+
     // prefix the database names
     // handy for running multiple tests in parallel without interrupting each other
     var couchpenter = new (require('couchpenter'))(
