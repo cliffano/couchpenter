@@ -195,7 +195,8 @@ describe('db', function () {
 /* commented out until https://github.com/felixge/node-sandboxed-module/issues/13 is resolved
  * that issue caused tasks array being passed to async.parallel to have x.constructor === Array to be false
  * and hence messing up results structure (object instead of array)
-    it('should create inexisting documents', function () {
+ * this test passes using async fork with array check patched to use Array.isArray
+    it('should create inexisting documents', function (done) {
       mocks.nano_fetch_results = [{
         rows: []
       }];
@@ -203,7 +204,7 @@ describe('db', function () {
       db.setUpDocuments({ 'db1': [{ _id: 'doc1' }, { _id: 'doc2' }] }, function (err, results) {
         checks.db_setupdocuments_err = err;
         checks.db_setupdocuments_results = results;
-        //done();
+        done();
       });
       should.not.exist(checks.db_setupdocuments_err);
       checks.nano_fetch_keys.length.should.equal(2);
@@ -213,14 +214,32 @@ describe('db', function () {
       createdResults.length.should.equal(2);
       createdResults[0].should.equal('doc1');
       createdResults[1].should.equal('doc2');
-      var ignoredResults = checks.db_setupdocuments_results['Updated documents (already exist) in database db1'];
-      ignoredResults.length.should.equal(0);
+      var updatedResults = checks.db_setupdocuments_results['Updated documents (already exist) in database db1'];
+      updatedResults.length.should.equal(0);
     });
 
-    it('should update existing documents', function () {
-
+    it('should update existing documents', function (done) {
+      mocks.nano_fetch_results = [{
+        rows: [ { key: 'doc1', doc: { _id: 'doc1' } }, { key: 'doc2', doc: { _id: 'doc2' } } ]
+      }];
+      db = new (create(checks, mocks))('http://localhost:5984');
+      db.setUpDocuments({ 'db1': [{ _id: 'doc1' }, { _id: 'doc2' }] }, function (err, results) {
+        checks.db_setupdocuments_err = err;
+        checks.db_setupdocuments_results = results;
+        done();
+      });
+      should.not.exist(checks.db_setupdocuments_err);
+      checks.nano_fetch_keys.length.should.equal(2);
+      checks.nano_fetch_keys[0].should.equal('doc1');
+      checks.nano_fetch_keys[1].should.equal('doc2');
+      var createdResults = checks.db_setupdocuments_results['Created documents in database db1'];
+      createdResults.length.should.equal(0);
+      var updatedResults = checks.db_setupdocuments_results['Updated documents (already exist) in database db1'];
+      updatedResults.length.should.equal(2);
+      updatedResults[0].should.equal('doc1');
+      updatedResults[1].should.equal('doc2');
     });
-*/
+ */
   });
 
   describe('tearDownDocuments', function () {
@@ -236,16 +255,54 @@ describe('db', function () {
       checks.db_teardowndocuments_err.message.should.equal('someerror');
       _.keys(checks.db_teardowndocuments_results).length.should.equal(0);
     });
-/*
-    it('should ignore inexisting documents', function () {
-
+/* commented out until https://github.com/felixge/node-sandboxed-module/issues/13 is resolved
+ * that issue caused tasks array being passed to async.parallel to have x.constructor === Array to be false
+ * and hence messing up results structure (object instead of array)
+ * this test passes using async fork with array check patched to use Array.isArray
+    it('should ignore inexisting documents', function (done) {
+      mocks.nano_fetch_results = [{
+        rows: []
+      }];
+      db = new (create(checks, mocks))('http://localhost:5984');
+      db.tearDownDocuments({ 'db1': [{ _id: 'doc1' }, { _id: 'doc2' }] }, function (err, results) {
+        checks.db_setupdocuments_err = err;
+        checks.db_setupdocuments_results = results;
+        done();
+      });
+      should.not.exist(checks.db_setupdocuments_err);
+      checks.nano_fetch_keys.length.should.equal(2);
+      checks.nano_fetch_keys[0].should.equal('doc1');
+      checks.nano_fetch_keys[1].should.equal('doc2');
+      var deletedResults = checks.db_setupdocuments_results['Deleted documents in database db1'];
+      deletedResults.length.should.equal(0);
+      var ignoredResults = checks.db_setupdocuments_results['Ignored documents (do not exist) in database db1'];
+      ignoredResults.length.should.equal(2);
+      ignoredResults[0].should.equal('doc1');
+      ignoredResults[1].should.equal('doc2');
     });
 
-    it('should delete existing documents', function () {
-
+    it('should delete existing documents', function (done) {
+      mocks.nano_fetch_results = [{
+        rows: [ { key: 'doc1', doc: { _id: 'doc1' } }, { key: 'doc2', doc: { _id: 'doc2' } } ]
+      }];
+      db = new (create(checks, mocks))('http://localhost:5984');
+      db.tearDownDocuments({ 'db1': [{ _id: 'doc1' }, { _id: 'doc2' }] }, function (err, results) {
+        checks.db_setupdocuments_err = err;
+        checks.db_setupdocuments_results = results;
+        done();
+      });
+      should.not.exist(checks.db_setupdocuments_err);
+      checks.nano_fetch_keys.length.should.equal(2);
+      checks.nano_fetch_keys[0].should.equal('doc1');
+      checks.nano_fetch_keys[1].should.equal('doc2');
+      var deletedResults = checks.db_setupdocuments_results['Deleted documents in database db1'];
+      deletedResults.length.should.equal(2);
+      deletedResults[0].should.equal('doc1');
+      deletedResults[1].should.equal('doc2');
+      var ignoredResults = checks.db_setupdocuments_results['Ignored documents (do not exist) in database db1'];
+      ignoredResults.length.should.equal(0);
     });
-*/
+ */
   });
-
 });
  
