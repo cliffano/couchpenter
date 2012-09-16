@@ -1,4 +1,7 @@
-### 0.1.1 (SNAPSHOT)
+### 0.1.2 (SNAPSHOT)
+*
+
+### 0.1.1
 * Add dbSetup to Couchpenter opts to allow passing setup object as an alternative to passing setup file name
 
 ### 0.1.0
