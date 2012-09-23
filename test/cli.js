@@ -81,6 +81,39 @@ describe('cli', function () {
       checks.couchpenter_do_exit.should.be.a('function');
     });
 
+    it('should use COUCHDB_URL env variable when url arg is not specified', function () {
+      mocks = {
+        process_cwd: '/somedir/couchpenter',
+        process_env: {
+          COUCHDB_URL: 'http://foo:bar@blah:8888'
+        }
+      };
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.setup.action({
+        setupFile: 'someconfigfile.js',
+        dir: 'curr/dir/'
+      });
+      checks.couchpenter_url.should.equal('http://foo:bar@blah:8888');
+    });
+
+    it('should use COUCHDB_URL env variable even when url arg is specified', function () {
+      mocks = {
+        process_cwd: '/somedir/couchpenter',
+        process_env: {
+          COUCHDB_URL: 'http://foo:bar@blah:8888'
+        }
+      };
+      cli = create(checks, mocks);
+      cli.exec();
+      checks.bag_parse_commands.setup.action({
+        url: 'http://blah:blah@blah:9999',
+        setupFile: 'someconfigfile.js',
+        dir: 'curr/dir/'
+      });
+      checks.couchpenter_url.should.equal('http://blah:blah@blah:9999');
+    });
+
     it('should contain setup-db command and delegate to couchpenter do when exec is called', function () {
       checks.bag_parse_commands['setup-db'].desc.should.equal('Create databases only');
       checks.bag_parse_commands['setup-db'].options.length.should.equal(3);

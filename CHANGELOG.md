@@ -1,5 +1,5 @@
 ### 0.1.2 (SNAPSHOT)
-*
+* Add URL setting via COUCHDB_URL environment variable
 
 ### 0.1.1
 * Add dbSetup to Couchpenter opts to allow passing setup object as an alternative to passing setup file name

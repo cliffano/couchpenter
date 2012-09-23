@@ -23,11 +23,21 @@ Create a sample couchpenter.json setup file:
 
 Execute a task against a CouchDB URL using default couchpenter.json setup file:
 
-    couchpenter <task> -u http://user:pass@localhost:5984
+    couchpenter <task> -u http://user:pass@host:port
+
+CouchDB URL can also be set via COUCHDB_URL environment variable:
+
+(*nix)
+
+    export COUCHDB_URL=http://user:pass@host:port
+
+(Windows)
+
+    set COUCHDB_URL=http://user:pass@host:port
 
 Execute a task using custom setup file:
 
-    couchpenter <task> -u http://user:pass@localhost:5984 -f somecouchpenter.json
+    couchpenter <task> -u http://user:pass@host:port -f somecouchpenter.json
 
 Tasks:
 
@@ -48,18 +58,18 @@ Programmatically:
 
     // use default couchpenter.json setup file
     var couchpenter = new (require('couchpenter'))(
-      'http://user:pass@localhost:5984'
+      'http://user:pass@host:port'
     );
 
     // use custom setup file
     var couchpenter = new (require('couchpenter'))(
-      'http://user:pass@localhost:5984',
+      'http://user:pass@host:port',
       { setupFile: 'somecouchpenter.json' }
     );
 
     // use setup object (instead of setup file)
     var couchpenter = new (require('couchpenter'))(
-      'http://user:pass@localhost:5984',
+      'http://user:pass@host:port',
       { dbSetup: {
           "db1": [
             { "_id": "doc1", "foo": "bar" },
@@ -73,13 +83,13 @@ Programmatically:
     // prefix the database names
     // handy for running multiple tests in parallel without interrupting each other
     var couchpenter = new (require('couchpenter'))(
-      'http://user:pass@localhost:5984',
+      'http://user:pass@host:port',
       { prefix: 'testrun123_' }
     );
 
     // specify a base directory for the documents specified in setup file
     var couchpenter = new (require('couchpenter'))(
-      'http://user:pass@localhost:5984',
+      'http://user:pass@host:port',
       { dir: '../some/dir/' }
     );
 
