@@ -1,4 +1,7 @@
-### 0.1.3 (SNAPSHOT)
+### 0.1.4 (SNAPSHOT)
+*
+
+### 0.1.3
 * Add couchpenter#resetDocuments to delete then reset documents programatically.
 
 ### 0.1.2
