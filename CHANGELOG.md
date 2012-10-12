@@ -1,5 +1,5 @@
 ### 0.1.3 (SNAPSHOT)
-*
+* Add couchpenter#resetDocuments to delete then reset documents programatically.
 
 ### 0.1.2
 * Add URL setting via COUCHDB_URL environment variable
