@@ -374,5 +374,43 @@ describe('couchpenter', function () {
       checks.db_tearDownDatabases_call_counts.should.equal(1);
     });
   });
+
+  describe('resetDocuments', function () {
+
+    it('should execute db task functions', function (done) {
+      checks.db_tearDownDocuments_call_counts = 0;
+      checks.db_setUpDocuments_call_counts = 0;
+      mocks.requires = {
+        './db': function (url, config, dir) {
+          checks.db_url = url;
+          checks.db_config = config;
+          checks.db_dir = dir;
+          return {
+            setUpDocuments: function(data, cb) {
+              checks.db_setUpDocuments_call_counts++;
+              cb();
+            },
+            tearDownDocuments: function(data, cb) {
+              checks.db_tearDownDocuments_call_counts++;
+              cb();
+            }
+          };
+        },
+        'bagofholding': {
+          cli: {
+            readCustomConfigFileSync: function (file) {
+              return '{ "somedb1": [], "somedb2": [] }';
+            }
+          }
+        }
+      };
+      couchpenter = new (create(checks, mocks))();
+      couchpenter.resetDocuments(function () {
+        done();
+      });
+      checks.db_setUpDocuments_call_counts.should.equal(1);
+      checks.db_tearDownDocuments_call_counts.should.equal(1);
+    });
+  });
 });
  
