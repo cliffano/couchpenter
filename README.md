@@ -105,6 +105,10 @@ Programmatically:
     couchpenter.reset(function (err, result) {
     });
 
+    // delete documents, then set up documents
+    couchpenter.resetDocuments(function (err, result) {
+    });
+
 Configuration
 -------------
 
