@@ -1,416 +1,266 @@
 var bag = require('bagofholding'),
-  _jscov = require('../lib/couchpenter'),
-  sandbox = require('sandboxed-module'),
-  should = require('should'),
-  checks, mocks,
-  couchpenter;
+  buster = require('buster'),
+  Couchpenter = require('../lib/couchpenter'),
+  Db = require('../lib/db'),
+  fs = require('fs'),
+  fsx = require('fs.extra');
 
-describe('couchpenter', function () {
-
-  function create(checks, mocks) {
-    return sandbox.require('../lib/couchpenter', {
-      requires: mocks.requires,
-      globals: {
-        console: bag.mock.console(checks),
-        process: bag.mock.process(checks, mocks)
-      },
-      locals: {
-        __dirname: '/somedir/couchpenter/lib'
-      }
+buster.testCase('couchpenter - init', {
+  setUp: function () {
+    this.mockConsole = this.mock(console);
+  },
+  'should copy sample couchpenter.js file to current directory when init is called': function (done) {
+    this.mockConsole.expects('log').once().withExactArgs('Creating sample setup file: couchpenter.json');
+    this.stub(fsx, 'copy', function (src, dest, cb) {
+      assert.isTrue(src.match(/\/examples\/couchpenter.json$/).length === 1);
+      assert.equals(dest, 'couchpenter.json');
+      cb();
+    });
+    var couchpenter = new Couchpenter();
+    couchpenter.init(function (err, result) {
+      assert.equals(err, undefined);
+      done();
     });
   }
-
-  beforeEach(function () {
-    checks = {};
-    mocks = {};
-  });
-
-  describe('init', function () {
-
-    it('should copy sample couchpenter.js file to current directory when init is called', function (done) {
-      mocks.requires = {
-        'fs.extra': {
-          copy: function (source, target, cb) {
-            checks.fsx_copy_source = source;
-            checks.fsx_copy_target = target;
-            cb();
-          }
-        }
-      };
-      couchpenter = new (create(checks, mocks))();
-      couchpenter.init(function () {
-        done();
-      }); 
-      checks.fsx_copy_source.should.equal('/somedir/couchpenter/examples/couchpenter.json');
-      checks.fsx_copy_target.should.equal('couchpenter.json');
-      checks.console_log_messages.length.should.equal(1);
-      checks.console_log_messages[0].should.equal('Creating sample setup file: couchpenter.json');
-    });
-  });
-
-  describe('task', function () {
-
-    it('should execute db task functions', function (done) {
-      checks.db_foo_call_counts = 0;
-      checks.db_bar_call_counts = 0;
-      mocks.requires = {
-        './db': function (url, config, dir) {
-          checks.db_url = url;
-          checks.db_config = config;
-          checks.db_dir = dir;
-          return {
-            foo: function(data, cb) {
-              checks.db_foo_call_counts++;
-              cb();
-            },
-            bar: function(data, cb) {
-              checks.db_bar_call_counts++;
-              cb();
-            }
-          };
-        },
-        'bagofholding': {
-          cli: {
-            readCustomConfigFileSync: function (file) {
-              return '{ "somedb1": [], "somedb2": [] }';
-            }
-          }
-        }
-      };
-      couchpenter = new (create(checks, mocks))();
-      couchpenter.task(['foo', 'bar'], function () {
-        done();
-      });
-
-      checks.db_foo_call_counts.should.equal(1);
-      checks.db_bar_call_counts.should.equal(1);
-    });
-
-    it('should not read setup file when db setup object is passed in opts', function (done) {
-      checks.db_foo_call_counts = 0;
-      checks.db_bar_call_counts = 0;
-      checks.readCustomConfigFileSync_counts = 0;
-      mocks.requires = {
-        './db': function (url, config, dir) {
-          checks.db_url = url;
-          checks.db_config = config;
-          checks.db_dir = dir;
-          return {
-            foo: function(data, cb) {
-              checks.db_foo_call_counts++;
-              cb();
-            },
-            bar: function(data, cb) {
-              checks.db_bar_call_counts++;
-              cb();
-            }
-          };
-        },
-        'bagofholding': {
-          cli: {
-            readCustomConfigFileSync: function (file) {
-              checks.readCustomConfigFileSync_counts++;
-              return '{ "somedb1": [], "somedb2": [] }';
-            }
-          }
-        }
-      };
-      couchpenter = new (create(checks, mocks))('http://localhost:5984', { dbSetup: { "somedb1": [], "somedb2": [] } });
-      couchpenter.task(['foo', 'bar'], function () {
-        done();
-      });
-
-      checks.readCustomConfigFileSync_counts.should.equal(0);
-    });
-
-    it('should use config keys as database data when a database task is specified', function (done) {
-      mocks.requires = {
-        './db': function (url, config, dir) {
-          return {
-            fooDatabases: function(data, cb) {
-              checks.db_data = data;
-              cb();
-            }
-          };
-        },
-        'bagofholding': {
-          cli: {
-            readCustomConfigFileSync: function (file) {
-              return '{ "somedb1": [], "somedb2": [] }';
-            }
-          }
-        }
-      };
-      couchpenter = new (create(checks, mocks))('http://localhost:5984', { setupFile: "someconfigfile.json" });
-      couchpenter.task(['fooDatabases'], function () {
-        done();
-      });
-
-      checks.db_data.length.should.equal(2);
-      checks.db_data[0].should.equal('somedb1');
-      checks.db_data[1].should.equal('somedb2');
-    });
-
-    it('should use config as-is as document data when a document is an object', function (done) {
-      mocks.requires = {
-        './db': function (url, config, dir) {
-          return {
-            fooDocuments: function(data, cb) {
-              checks.db_data = data;
-              cb();
-            }
-          };
-        },
-        'bagofholding': {
-          cli: {
-            readCustomConfigFileSync: function (file) {
-              return '{ "somedb1": [{"_id": "id1"}], "somedb2": [{"_id": "id2"}] }';
-            }
-          }
-        }
-      };
-      couchpenter = new (create(checks, mocks))('http://localhost:5984', { setupFile: "someconfigfile.json" });
-      couchpenter.task(['fooDocuments'], function () {
-        done();
-      });
-      checks.db_data.somedb1[0]._id.should.equal('id1');
-      checks.db_data.somedb2[0]._id.should.equal('id2');
-    });
-
-    it('should use content of a file when document value is a file name ending with .json', function (done) {
-      mocks['fs_readFileSync_curr/dir/a/b/c/file1.json'] = '{ "_id": "id1" }';
-      mocks['fs_readFileSync_curr/file2.json'] = '{ "_id": "id2" }';
-      mocks.requires = {
-        './db': function (url, config, dir) {
-          return {
-            fooDocuments: function(data, cb) {
-              checks.db_data = data;
-              cb();
-            }
-          };
-        },
-        'bagofholding': {
-          cli: {
-            readCustomConfigFileSync: function (file) {
-              return '{ "somedb1": ["a/b/c/file1.json"], "somedb2": ["../file2.json"] }';
-            }
-          }
-        },
-        fs: bag.mock.fs(checks, mocks)
-      };
-      couchpenter = new (create(checks, mocks))('http://localhost:5984', { setupFile: "someconfigfile.json", dir: 'curr/dir/' });
-      couchpenter.task(['fooDocuments'], function () {
-        done();
-      });
-      checks.db_data.somedb1[0]._id.should.equal('id1');
-      checks.db_data.somedb2[0]._id.should.equal('id2');
-    });
-
-    it('should require module when document value is a string not a .json file name', function (done) {
-      mocks.requires = {
-        './db': function (url, config, dir) {
-          return {
-            fooDocuments: function(data, cb) {
-              checks.db_data = data;
-              cb();
-            }
-          };
-        },
-        'bagofholding': {
-          cli: {
-            readCustomConfigFileSync: function (file) {
-              return '{ "somedb1": ["a/b/c/module1"], "somedb2": ["../module2"] }';
-            }
-          }
-        },
-        'curr/dir/a/b/c/module1': { _id: 'id1' },
-        'curr/module2': { _id: 'id2' }
-      };
-      couchpenter = new (create(checks, mocks))('http://localhost:5984', { setupFile: "someconfigfile.json", dir: 'curr/dir/' });
-      couchpenter.task(['fooDocuments'], function () {
-        done();
-      });
-      checks.db_data.somedb1[0]._id.should.equal('id1');
-      checks.db_data.somedb2[0]._id.should.equal('id2');
-    });
-
-    it('should prefix database names when option prefix is specified', function (done) {
-      mocks.requires = {
-        './db': function (url, config, dir) {
-          return {
-            fooDocuments: function(data, cb) {
-              checks.db_data = data;
-              cb();
-            }
-          };
-        },
-        'bagofholding': {
-          cli: {
-            readCustomConfigFileSync: function (file) {
-              return '{ "somedb1": [{"_id": "id1"}], "somedb2": [{"_id": "id2"}] }';
-            }
-          }
-        }
-      };
-      couchpenter = new (create(checks, mocks))('http://localhost:5984', { setupFile: "someconfigfile.json", prefix: 'someprefix' });
-      couchpenter.task(['fooDocuments'], function () {
-        done();
-      });
-      checks.db_data.someprefixsomedb1[0]._id.should.equal('id1');
-      checks.db_data.someprefixsomedb2[0]._id.should.equal('id2');
-    });
-  });
-
-  describe('setUp', function () {
-
-    it('should execute db task functions', function (done) {
-      checks.db_setUpDatabases_call_counts = 0;
-      checks.db_setUpDocuments_call_counts = 0;
-      mocks.requires = {
-        './db': function (url, config, dir) {
-          checks.db_url = url;
-          checks.db_config = config;
-          checks.db_dir = dir;
-          return {
-            setUpDatabases: function(data, cb) {
-              checks.db_setUpDatabases_call_counts++;
-              cb();
-            },
-            setUpDocuments: function(data, cb) {
-              checks.db_setUpDocuments_call_counts++;
-              cb();
-            }
-          };
-        },
-        'bagofholding': {
-          cli: {
-            readCustomConfigFileSync: function (file) {
-              return '{ "somedb1": [], "somedb2": [] }';
-            }
-          }
-        }
-      };
-      couchpenter = new (create(checks, mocks))();
-      couchpenter.setUp(function () {
-        done();
-      });
-      checks.db_setUpDatabases_call_counts.should.equal(1);
-      checks.db_setUpDocuments_call_counts.should.equal(1);
-    });
-  });
-
-  describe('tearDown', function () {
-
-    it('should execute db task functions', function (done) {
-      checks.db_tearDownDatabases_call_counts = 0;
-      mocks.requires = {
-        './db': function (url, config, dir) {
-          checks.db_url = url;
-          checks.db_config = config;
-          checks.db_dir = dir;
-          return {
-            tearDownDatabases: function(data, cb) {
-              checks.db_tearDownDatabases_call_counts++;
-              cb();
-            }
-          };
-        },
-        'bagofholding': {
-          cli: {
-            readCustomConfigFileSync: function (file) {
-              return '{ "somedb1": [], "somedb2": [] }';
-            }
-          }
-        }
-      };
-      couchpenter = new (create(checks, mocks))();
-      couchpenter.tearDown(function () {
-        done();
-      });
-      checks.db_tearDownDatabases_call_counts.should.equal(1);
-    });
-  });
-
-  describe('reset', function () {
-
-    it('should execute db task functions', function (done) {
-      checks.db_tearDownDatabases_call_counts = 0;
-      checks.db_setUpDatabases_call_counts = 0;
-      checks.db_setUpDocuments_call_counts = 0;
-      mocks.requires = {
-        './db': function (url, config, dir) {
-          checks.db_url = url;
-          checks.db_config = config;
-          checks.db_dir = dir;
-          return {
-            setUpDatabases: function(data, cb) {
-              checks.db_setUpDatabases_call_counts++;
-              cb();
-            },
-            setUpDocuments: function(data, cb) {
-              checks.db_setUpDocuments_call_counts++;
-              cb();
-            },
-            tearDownDatabases: function(data, cb) {
-              checks.db_tearDownDatabases_call_counts++;
-              cb();
-            }
-          };
-        },
-        'bagofholding': {
-          cli: {
-            readCustomConfigFileSync: function (file) {
-              return '{ "somedb1": [], "somedb2": [] }';
-            }
-          }
-        }
-      };
-      couchpenter = new (create(checks, mocks))();
-      couchpenter.reset(function () {
-        done();
-      });
-      checks.db_setUpDatabases_call_counts.should.equal(1);
-      checks.db_setUpDocuments_call_counts.should.equal(1);
-      checks.db_tearDownDatabases_call_counts.should.equal(1);
-    });
-  });
-
-  describe('resetDocuments', function () {
-
-    it('should execute db task functions', function (done) {
-      checks.db_tearDownDocuments_call_counts = 0;
-      checks.db_setUpDocuments_call_counts = 0;
-      mocks.requires = {
-        './db': function (url, config, dir) {
-          checks.db_url = url;
-          checks.db_config = config;
-          checks.db_dir = dir;
-          return {
-            setUpDocuments: function(data, cb) {
-              checks.db_setUpDocuments_call_counts++;
-              cb();
-            },
-            tearDownDocuments: function(data, cb) {
-              checks.db_tearDownDocuments_call_counts++;
-              cb();
-            }
-          };
-        },
-        'bagofholding': {
-          cli: {
-            readCustomConfigFileSync: function (file) {
-              return '{ "somedb1": [], "somedb2": [] }';
-            }
-          }
-        }
-      };
-      couchpenter = new (create(checks, mocks))();
-      couchpenter.resetDocuments(function () {
-        done();
-      });
-      checks.db_setUpDocuments_call_counts.should.equal(1);
-      checks.db_tearDownDocuments_call_counts.should.equal(1);
-    });
-  });
 });
- 
+
+buster.testCase('couchpenter - task', {
+  setUp: function () {
+    var self = this;
+    this.calls = [];
+    this.stub(Db.prototype, 'createDatabases', function (data, cb) { self.calls.push('createDatabases'); cb(); });
+    this.stub(Db.prototype, 'removeDatabases', function (data, cb) { self.calls.push('removeDatabases'); cb(); });
+    this.stub(Db.prototype, 'cleanDatabases', function (data, cb) { self.calls.push('cleanDatabases'); cb(); });
+    this.stub(Db.prototype, 'createDocuments', function (data, cb) { self.calls.push('createDocuments'); cb(); });
+    this.stub(Db.prototype, 'saveDocuments', function (data, cb) { self.calls.push('saveDocuments'); cb(); });
+    this.stub(Db.prototype, 'removeDocuments', function (data, cb) { self.calls.push('removeDocuments'); cb(); });
+  },
+  'should call correct tasks for setUp method': function (done) {
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+      self = this;
+    couchpenter.setUp(function (err, result) {
+      assert.equals(self.calls.length, 2);
+      assert.equals(self.calls[0], 'createDatabases');
+      assert.equals(self.calls[1], 'createDocuments');
+      done();
+    });
+  },
+  'should call correct tasks for setUpDatabases method': function (done) {
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+      self = this;
+    couchpenter.setUpDatabases(function (err, result) {
+      assert.equals(self.calls.length, 1);
+      assert.equals(self.calls[0], 'createDatabases');
+      done();
+    });
+  },
+  'should call correct tasks for setUpDocuments method': function (done) {
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+      self = this;
+    couchpenter.setUpDocuments(function (err, result) {
+      assert.equals(self.calls.length, 1);
+      assert.equals(self.calls[0], 'createDocuments');
+      done();
+    });
+  },
+  'should call correct tasks for setUpDocumentsOverwrite method': function (done) {
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+      self = this;
+    couchpenter.setUpDocumentsOverwrite(function (err, result) {
+      assert.equals(self.calls.length, 1);
+      assert.equals(self.calls[0], 'saveDocuments');
+      done();
+    });
+  },
+  'should call correct tasks for tearDown method': function (done) {
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+      self = this;
+    couchpenter.tearDown(function (err, result) {
+      assert.equals(self.calls.length, 1);
+      assert.equals(self.calls[0], 'removeDatabases');
+      done();
+    });
+  },
+  'should call correct tasks for tearDownDatabases method': function (done) {
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+      self = this;
+    couchpenter.tearDownDatabases(function (err, result) {
+      assert.equals(self.calls.length, 1);
+      assert.equals(self.calls[0], 'removeDatabases');
+      done();
+    });
+  },
+  'should call correct tasks for tearDownDocuments method': function (done) {
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+      self = this;
+    couchpenter.tearDownDocuments(function (err, result) {
+      assert.equals(self.calls.length, 1);
+      assert.equals(self.calls[0], 'removeDocuments');
+      done();
+    });
+  },
+  'should call correct tasks for reset method': function (done) {
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+      self = this;
+    couchpenter.reset(function (err, result) {
+      assert.equals(self.calls.length, 3);
+      assert.equals(self.calls[0], 'removeDatabases');
+      assert.equals(self.calls[1], 'createDatabases');
+      assert.equals(self.calls[2], 'createDocuments');
+      done();
+    });
+  },
+  'should call correct tasks for resetDatabases method': function (done) {
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+      self = this;
+    couchpenter.resetDatabases(function (err, result) {
+      assert.equals(self.calls.length, 2);
+      assert.equals(self.calls[0], 'removeDatabases');
+      assert.equals(self.calls[1], 'createDatabases');
+      done();
+    });
+  },
+  'should call correct tasks for resetDocuments method': function (done) {
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+      self = this;
+    couchpenter.resetDocuments(function (err, result) {
+      assert.equals(self.calls.length, 3);
+      assert.equals(self.calls[0], 'removeDatabases');
+      assert.equals(self.calls[1], 'createDatabases');
+      assert.equals(self.calls[2], 'createDocuments');
+      done();
+    });
+  },
+  'should call correct tasks for clean method': function (done) {
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+      self = this;
+    couchpenter.clean(function (err, result) {
+      assert.equals(self.calls.length, 1);
+      assert.equals(self.calls[0], 'cleanDatabases');
+      done();
+    });
+  },
+  'should call correct tasks for cleanDatabases method': function (done) {
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+      self = this;
+    couchpenter.cleanDatabases(function (err, result) {
+      assert.equals(self.calls.length, 1);
+      assert.equals(self.calls[0], 'cleanDatabases');
+      done();
+    });
+  }
+});
+
+buster.testCase('couchpenter - _task', {
+  'should use optional setup object when specified': function (done) {
+    this.stub(Db.prototype, 'createDocuments', function (data, cb) {
+      assert.equals(data.db1.foo, 'bar');
+      cb();
+    });
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } });
+    couchpenter._task(['createDocuments'], function (err, result) {
+      assert.isNull(err);
+      done();
+    });
+  },
+  'should combine results from multiple tasks into a single array': function (done) {
+    this.stub(Db.prototype, 'removeDocuments', function (data, cb) {
+      assert.equals(data.db1.foo, 'bar');
+      cb(null, [{ id: 'id1', message: 'someresult1' }]);
+    });
+    this.stub(Db.prototype, 'createDocuments', function (data, cb) {
+      assert.equals(data.db1.foo, 'bar');
+      cb(null, [{ id: 'id2', message: 'someresult2' }]);
+    });
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } });
+    couchpenter._task(['removeDocuments', 'createDocuments'], function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 2);
+      assert.equals(result[0].id, 'id1');
+      assert.equals(result[0].message, 'someresult1');
+      assert.equals(result[1].id, 'id2');
+      assert.equals(result[1].message, 'someresult2');
+      done();
+    });
+  },
+  'should fallback to optional setup file when setup object is not specified': function (done) {
+    this.stub(bag, 'cli', {
+      lookupFile: function (file) {
+        assert.equals(file, 'somefile.json');
+        return '{ "db1": { "foo": "bar" }}';
+      }
+    });
+    this.stub(Db.prototype, 'createDocuments', function (data, cb) {
+      assert.equals(data.db1.foo, 'bar');
+      cb();
+    });
+    var couchpenter = new Couchpenter('http://somehost', { setupFile: 'somefile.json' });
+    couchpenter._task(['createDocuments'], function (err, result) {
+      assert.isNull(err);
+      done();
+    });
+  },
+  'should pass database names as data when task name is postfixed with Databases': function (done) {
+    this.stub(Db.prototype, 'createDatabases', function (data, cb) {
+      assert.equals(data[0], 'db1');
+      cb();
+    });
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } });
+    couchpenter._task(['createDatabases'], function (err, result) {
+      assert.isNull(err);
+      done();
+    });
+  },
+  'should prefix database names when optional prefix is specified': function (done) {
+    this.stub(Db.prototype, 'createDatabases', function (data, cb) {
+      assert.equals(data[0], 'test1_db1');
+      cb();
+    });
+    var couchpenter = new Couchpenter('http://somehost', { prefix: 'test1_', dbSetup: { db1: { foo: 'bar' } } });
+    couchpenter._task(['createDatabases'], function (err, result) {
+      assert.isNull(err);
+      done();
+    });
+  },
+  'should pass setup with processed documents as data when task name is not postfixed with Databases': function (done) {
+    this.stub(Db.prototype, 'createDocuments', function (data, cb) {
+      assert.equals(data.db1.foo, 'bar');
+      cb();
+    });
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } });
+    couchpenter._task(['createDocuments'], function (err, result) {
+      assert.isNull(err);
+      done();
+    });
+  }
+});
+
+buster.testCase('couchpenter - _docs', {
+  setUp: function () {
+    this.mockFs = this.mock(fs);
+  },
+  'should leave document as-is when value is an object': function () {
+    var couchpenter = new Couchpenter(),
+      setup = couchpenter._docs({ db1: [{ foo: 'bar' }] });
+    assert.equals(setup.db1[0].foo, 'bar');
+  },
+  'should set file content when value is .json file': function () {   
+    this.mockFs.expects('readFileSync').once().withExactArgs('/curr/dir/foo/file1.json').returns('{ "foo": "bar" }');
+    var couchpenter = new Couchpenter(),
+      setup = couchpenter._docs({ db1: ['foo/file1.json'] }, '/curr/dir');
+    assert.equals(setup.db1[0].foo, 'bar');
+  },
+  'should require document when value is a non .json file string': function () {
+    var couchpenter = new Couchpenter(),
+      setup = couchpenter._docs({ db1: ['test/fixtures/somemodule'] }, process.cwd());
+    assert.equals(setup.db1[0].foo, 'bar');
+  },
+  'should throw error when value is non object and non string': function () {
+    var couchpenter = new Couchpenter();
+    try {
+      couchpenter._docs({ db1: [ 123 ] });
+    } catch (err) {
+      assert.equals(err.message, 'Invalid document 123 in db db1, only object and string allowed');
+    }
+  }
+});

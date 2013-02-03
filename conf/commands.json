@@ -1,0 +1,103 @@
+{
+  "commands": {
+    "init": {
+      "desc": "Create sample setup file\nUsage: couchpenter init"
+    },
+    "setup": {
+      "desc": "Create databases and documents\nUsage: couchpenter [-u/--url <url>] [-f/--setup-file <setupFile>] [-d/--dir <dir>] setup",
+      "options": [
+        { "arg": "-u, --url <url>", "desc": "CouchDB URL in format http://user:pass@host:port, default: http://localhost:5984" },
+        { "arg": "-f, --setup-file <setupFile>", "desc": "Setup file, default: couchpenter.json" },
+        { "arg": "-d, --dir <dir>", "desc": "Documents directory, default: current working directory" }
+      ]
+    },
+    "setup-db": {
+      "desc": "Create databases only\nUsage: couchpenter [-u/--url <url>] [-f/--setup-file <setupFile>] [-d/--dir <dir>] setup-db",
+      "options": [
+        { "arg": "-u, --url <url>", "desc": "CouchDB URL in format http://user:pass@host:port, default: http://localhost:5984" },
+        { "arg": "-f, --setup-file <setupFile>", "desc": "Setup file, default: couchpenter.json" },
+        { "arg": "-d, --dir <dir>", "desc": "Documents directory, default: current working directory" }
+      ]
+    },
+    "setup-doc": {
+      "desc": "Create documents only, does not overwrite if exist\nUsage: couchpenter [-u/--url <url>] [-f/--setup-file <setupFile>] [-d/--dir <dir>] setup-doc",
+      "options": [
+        { "arg": "-u, --url <url>", "desc": "CouchDB URL in format http://user:pass@host:port, default: http://localhost:5984" },
+        { "arg": "-f, --setup-file <setupFile>", "desc": "Setup file, default: couchpenter.json" },
+        { "arg": "-d, --dir <dir>", "desc": "Documents directory, default: current working directory" }
+      ]
+    },
+    "setup-doc-overwrite": {
+      "desc": "Create documents only, overwrite if exist\nUsage: couchpenter [-u/--url <url>] [-f/--setup-file <setupFile>] [-d/--dir <dir>] setup-doc-overwrite",
+      "options": [
+        { "arg": "-u, --url <url>", "desc": "CouchDB URL in format http://user:pass@host:port, default: http://localhost:5984" },
+        { "arg": "-f, --setup-file <setupFile>", "desc": "Setup file, default: couchpenter.json" },
+        { "arg": "-d, --dir <dir>", "desc": "Documents directory, default: current working directory" }
+      ]
+    },
+    "teardown": {
+      "desc": "Alias for teardown-db\nUsage: couchpenter [-u/--url <url>] [-f/--setup-file <setupFile>] [-d/--dir <dir>] teardown",
+      "options": [
+        { "arg": "-u, --url <url>", "desc": "CouchDB URL in format http://user:pass@host:port, default: http://localhost:5984" },
+        { "arg": "-f, --setup-file <setupFile>", "desc": "Setup file, default: couchpenter.json" },
+        { "arg": "-d, --dir <dir>", "desc": "Documents directory, default: current working directory" }
+      ]
+    },
+    "teardown-db": {
+      "desc": "Delete databases\nUsage: couchpenter [-u/--url <url>] [-f/--setup-file <setupFile>] [-d/--dir <dir>] teardown-db",
+      "options": [
+        { "arg": "-u, --url <url>", "desc": "CouchDB URL in format http://user:pass@host:port, default: http://localhost:5984" },
+        { "arg": "-f, --setup-file <setupFile>", "desc": "Setup file, default: couchpenter.json" },
+        { "arg": "-d, --dir <dir>", "desc": "Documents directory, default: current working directory" }
+      ]
+    },
+    "teardown-doc": {
+      "desc": "Delete documents\nUsage: couchpenter [-u/--url <url>] [-f/--setup-file <setupFile>] [-d/--dir <dir>] teardown-doc",
+      "options": [
+        { "arg": "-u, --url <url>", "desc": "CouchDB URL in format http://user:pass@host:port, default: http://localhost:5984" },
+        { "arg": "-f, --setup-file <setupFile>", "desc": "Setup file, default: couchpenter.json" },
+        { "arg": "-d, --dir <dir>", "desc": "Documents directory, default: current working directory" }
+      ]
+    },
+    "reset": {
+      "desc": "Alias for reset-doc\nUsage: couchpenter [-u/--url <url>] [-f/--setup-file <setupFile>] [-d/--dir <dir>] reset",
+      "options": [
+        { "arg": "-u, --url <url>", "desc": "CouchDB URL in format http://user:pass@host:port, default: http://localhost:5984" },
+        { "arg": "-f, --setup-file <setupFile>", "desc": "Setup file, default: couchpenter.json" },
+        { "arg": "-d, --dir <dir>", "desc": "Documents directory, default: current working directory" }
+      ]
+    },
+    "reset-db": {
+      "desc": "Delete then recreate databases and documents\nUsage: couchpenter [-u/--url <url>] [-f/--setup-file <setupFile>] [-d/--dir <dir>] reset-db",
+      "options": [
+        { "arg": "-u, --url <url>", "desc": "CouchDB URL in format http://user:pass@host:port, default: http://localhost:5984" },
+        { "arg": "-f, --setup-file <setupFile>", "desc": "Setup file, default: couchpenter.json" },
+        { "arg": "-d, --dir <dir>", "desc": "Documents directory, default: current working directory" }
+      ]
+    },
+    "reset-doc": {
+      "desc": "Delete then recreate documents only\nUsage: couchpenter [-u/--url <url>] [-f/--setup-file <setupFile>] [-d/--dir <dir>] reset-doc",
+      "options": [
+        { "arg": "-u, --url <url>", "desc": "CouchDB URL in format http://user:pass@host:port, default: http://localhost:5984" },
+        { "arg": "-f, --setup-file <setupFile>", "desc": "Setup file, default: couchpenter.json" },
+        { "arg": "-d, --dir <dir>", "desc": "Documents directory, default: current working directory" }
+      ]
+    },
+    "clean": {
+      "desc": "Alias for clean-db\nUsage: couchpenter [-u/--url <url>] [-f/--setup-file <setupFile>] [-d/--dir <dir>] clean",
+      "options": [
+        { "arg": "-u, --url <url>", "desc": "CouchDB URL in format http://user:pass@host:port, default: http://localhost:5984" },
+        { "arg": "-f, --setup-file <setupFile>", "desc": "Setup file, default: couchpenter.json" },
+        { "arg": "-d, --dir <dir>", "desc": "Documents directory, default: current working directory" }
+      ]
+    },
+    "clean-db": {
+      "desc": "Delete unknown databases (not configured in setup file)\nUsage: couchpenter [-u/--url <url>] [-f/--setup-file <setupFile>] [-d/--dir <dir>] clean-db",
+      "options": [
+        { "arg": "-u, --url <url>", "desc": "CouchDB URL in format http://user:pass@host:port, default: http://localhost:5984" },
+        { "arg": "-f, --setup-file <setupFile>", "desc": "Setup file, default: couchpenter.json" },
+        { "arg": "-d, --dir <dir>", "desc": "Documents directory, default: current working directory" }
+      ]
+    }
+  }
+}

@@ -1,3 +1,4 @@
+/*
 var _ = require('underscore'),
   bag = require('bagofholding'),
   sandbox = require('sandboxed-module'),
@@ -192,7 +193,7 @@ describe('db', function () {
       checks.db_setupdocuments_err.message.should.equal('someerror');
       _.keys(checks.db_setupdocuments_results).length.should.equal(0);
     });
-/* commented out until https://github.com/felixge/node-sandboxed-module/issues/13 is resolved
+/ * commented out until https://github.com/felixge/node-sandboxed-module/issues/13 is resolved
  * that issue caused tasks array being passed to async.parallel to have x.constructor === Array to be false
  * and hence messing up results structure (object instead of array)
  * this test passes using async fork with array check patched to use Array.isArray
@@ -239,7 +240,7 @@ describe('db', function () {
       updatedResults[0].should.equal('doc1');
       updatedResults[1].should.equal('doc2');
     });
- */
+ * /
   });
 
   describe('tearDownDocuments', function () {
@@ -255,7 +256,7 @@ describe('db', function () {
       checks.db_teardowndocuments_err.message.should.equal('someerror');
       _.keys(checks.db_teardowndocuments_results).length.should.equal(0);
     });
-/* commented out until https://github.com/felixge/node-sandboxed-module/issues/13 is resolved
+/ * commented out until https://github.com/felixge/node-sandboxed-module/issues/13 is resolved
  * that issue caused tasks array being passed to async.parallel to have x.constructor === Array to be false
  * and hence messing up results structure (object instead of array)
  * this test passes using async fork with array check patched to use Array.isArray
@@ -302,7 +303,7 @@ describe('db', function () {
       var ignoredResults = checks.db_setupdocuments_results['Ignored documents (do not exist) in database db1'];
       ignoredResults.length.should.equal(0);
     });
- */
+ * /
   });
 });
- 
+*/

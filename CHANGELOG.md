@@ -1,5 +1,8 @@
-### 0.1.4 (SNAPSHOT)
-*
+### 0.2.0-pre
+* Add setup-doc-overwrite, clean, and clean-db cli targets
+* Support local document (with _local/* ID) by replacing bulk documents operation with one operation per database/document (tradeoff performance for completeness)
+* Change cli output to display one database/document operation per line (used to be grouped)
+* Change result format, was 2-dimensional array of strings, now 1-dimensional array of result objects in format { id: , error: , message: }. Error will be undefined when that particular result is a success.
 
 ### 0.1.3
 * Add couchpenter#resetDocuments to delete then reset documents programatically.
