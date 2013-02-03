@@ -52,10 +52,10 @@ buster.testCase('cli - task', {
     
     this._test = function (command, couchpenterFn) {
       mockConsole.expects('log').once().withExactArgs('%s - %s', 'id1', 'someresult1');
-      mockConsole.expects('log').once().withExactArgs('%s - %s', 'id2', 'someresult2');
+      mockConsole.expects('error').once().withExactArgs('%s - %s', 'id2', 'someresult2');
       mockProcess.expects('exit').once().withExactArgs(0);
       self.stub(Couchpenter.prototype, couchpenterFn, function (cb) {
-        cb(null, [{ id: 'id1', message: 'someresult1' }, { id: 'id2', message: 'someresult2' }]);
+        cb(null, [{ id: 'id1', message: 'someresult1' }, { id: 'id2', message: 'someresult2', error: { status_code: 404 } }]);
       });
       self.stub(bag, 'cli', {
         command: function (base, actions) {
