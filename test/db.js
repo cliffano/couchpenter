@@ -1,309 +1,349 @@
-/*
-var _ = require('underscore'),
-  bag = require('bagofholding'),
-  sandbox = require('sandboxed-module'),
-  should = require('should'),
-  checks, mocks,
-  db;
+var buster = require('buster'),
+  Db = require('../lib/db');
 
-describe('db', function () {
-
-  function create(checks, mocks) {
-    var count = 0;
-    checks.nano_create_dbNames = [];
-    checks.nano_destroy_dbNames = [];
-    return sandbox.require('../lib/db', {
-      requires: {
-        nano: function (dbUrl) {
-          checks.nano_dburl = dbUrl;
-
-          return {
-            db: {
-              create: function (dbName, cb) {
-                checks.nano_create_dbNames.push(dbName);
-                cb(
-                  mocks.nano_create_err, 
-                  mocks.nano_create_results ? mocks.nano_create_results[count++] : undefined
-                );
-              },
-              destroy: function (dbName, cb) {
-                checks.nano_destroy_dbNames.push(dbName);
-                cb(
-                  mocks.nano_destroy_err, 
-                  mocks.nano_destroy_results ? mocks.nano_destroy_results[count++] : undefined
-                );
-              },
-              list: function (cb) {
-                cb(
-                  mocks.nano_list_err, 
-                  mocks.nano_list_results ? mocks.nano_list_results[count++] : undefined
-                );
-              }
-            },
-            use: function (dbName) {
-              checks.nano_use_dbname = dbName;
-              var count = 0;
-              return {
-                bulk: function (docs, opts, cb) {
-                  checks.nano_bulk_docs = docs;
-                  checks.nano_bulk_opts = opts;
-                  cb(
-                    mocks.nano_bulk_err, 
-                    mocks.nano_bulk_results ? mocks.nano_bulk_results[count++] : undefined
-                  );                  
-                },
-                fetch: function (keys, opts, cb) {
-                  checks.nano_fetch_keys = keys.keys;
-                  checks.nano_fetch_opts = opts;
-                  cb(
-                    mocks.nano_fetch_err, 
-                    mocks.nano_fetch_results ? mocks.nano_fetch_results[count++] : undefined
-                  );
-                }
-              };
-            }
-          };
-        }
-      },
-      globals: {}
+buster.testCase('db - createDatabases', {
+  setUp: function () {
+    this._mockNano = function (createCb) {
+      return function (url) {
+        return { db: { create: createCb } };
+      };
+    };
+  },
+  'should create databases successfully when the databases do not exist': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(function (dbName, cb) { cb(null, { ok: 'true' }); })
+    });
+    db.createDatabases(['db1', 'db2'], function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 2);
+      assert.equals(result[0].id, 'db1');
+      assert.equals(result[0].message, 'created');
+      assert.equals(result[1].id, 'db2');
+      assert.equals(result[1].message, 'created');
+      done();
+    });
+  },
+  'should display error message when create databases fail because they already exist': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(function (dbName, cb) { cb({ status_code: 412, error: 'file_exists' }); })
+    });
+    db.createDatabases(['db1', 'db2'], function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 2);
+      assert.equals(result[0].id, 'db1');
+      assert.equals(result[0].message, 'file_exists (412)');
+      assert.equals(result[1].id, 'db2');
+      assert.equals(result[1].message, 'file_exists (412)');
+      done();
     });
   }
-
-  beforeEach(function () {
-    checks = {};
-    mocks = {};
-  });
-
-  describe('setUpDatabases', function () {
-
-    it('should pass error when db list gives an error', function (done) {
-      mocks.nano_list_err = new Error('someerror');
-      db = new (create(checks, mocks))('http://localhost:5984');
-      db.setUpDatabases(['db1', 'db2'], function (err, results) {
-        checks.db_setupdatabases_err = err;
-        checks.db_setupdatabases_results = results;
-        done();
-      });
-      checks.db_setupdatabases_err.message.should.equal('someerror');
-      should.not.exist(checks.db_setupdatabases_results);
-    });
-
-    it('should create inexisting databases', function (done) {
-      mocks.nano_list_results = [];
-      db = new (create(checks, mocks))('http://localhost:5984');
-      db.setUpDatabases(['db1', 'db2'], function (err, results) {
-        checks.db_setupdatabases_err = err;
-        checks.db_setupdatabases_results = results;
-        done();
-      });
-      checks.nano_create_dbNames.length.should.equal(2);
-      checks.nano_create_dbNames[0].should.equal('db1');
-      checks.nano_create_dbNames[1].should.equal('db2');
-      should.not.exist(checks.db_setupdatabases_err);
-      var createdResults = checks.db_setupdatabases_results['Created databases'];
-      createdResults.length.should.equal(2);
-      createdResults[0].should.equal('db1');
-      createdResults[1].should.equal('db2');
-      var ignoredResults = checks.db_setupdatabases_results['Ignored databases (already exist)'];
-      ignoredResults.length.should.equal(0);
-    });
-
-    it('should ignore existing databases', function (done) {
-      mocks.nano_list_results = [['db1', 'db2']];
-      db = new (create(checks, mocks))('http://localhost:5984');
-      db.setUpDatabases(['db1', 'db2'], function (err, results) {
-        checks.db_setupdatabases_err = err;
-        checks.db_setupdatabases_results = results;
-        done();
-      });
-      checks.nano_create_dbNames.length.should.equal(0);
-      should.not.exist(checks.db_setupdatabases_err);
-      var createdResults = checks.db_setupdatabases_results['Created databases'];
-      createdResults.length.should.equal(0);
-      var ignoredResults = checks.db_setupdatabases_results['Ignored databases (already exist)'];
-      ignoredResults.length.should.equal(2);
-      ignoredResults[0].should.equal('db1');
-      ignoredResults[1].should.equal('db2');
-    });
-  });
-
-  describe('tearDownDatabases', function () {
-
-    it('should pass error when db list gives an error', function (done) {
-      mocks.nano_list_err = new Error('someerror');
-      db = new (create(checks, mocks))('http://localhost:5984');
-      db.tearDownDatabases(['db1', 'db2'], function (err, results) {
-        checks.db_teardowndatabases_err = err;
-        checks.db_teardowndatabases_results = results;
-        done();
-      });
-      checks.db_teardowndatabases_err.message.should.equal('someerror');
-      should.not.exist(checks.db_teardowndatabases_results);
-    });
-
-    it('should ignore inexisting databases', function (done) {
-      mocks.nano_list_results = [];
-      db = new (create(checks, mocks))('http://localhost:5984');
-      db.tearDownDatabases(['db1', 'db2'], function (err, results) {
-        checks.db_teardowndatabases_err = err;
-        checks.db_teardowndatabases_results = results;
-        done();
-      });
-      checks.nano_destroy_dbNames.length.should.equal(0);
-      should.not.exist(checks.db_teardowndatabases_err);
-      var createdResults = checks.db_teardowndatabases_results['Deleted databases'];
-      createdResults.length.should.equal(0);
-      var ignoredResults = checks.db_teardowndatabases_results['Ignored databases (do not exist)'];
-      ignoredResults.length.should.equal(2);
-      ignoredResults[0].should.equal('db1');
-      ignoredResults[1].should.equal('db2');
-    });
-
-    it('should delete existing databases', function (done) {
-      mocks.nano_list_results = [['db1', 'db2']];
-      db = new (create(checks, mocks))('http://localhost:5984');
-      db.tearDownDatabases(['db1', 'db2'], function (err, results) {
-        checks.db_teardowndatabases_err = err;
-        checks.db_teardowndatabases_results = results;
-        done();
-      });
-      checks.nano_destroy_dbNames.length.should.equal(2);
-      checks.nano_destroy_dbNames[0].should.equal('db1');
-      checks.nano_destroy_dbNames[1].should.equal('db2');
-      should.not.exist(checks.db_teardowndatabases_err);
-      var deletedResults = checks.db_teardowndatabases_results['Deleted databases'];
-      deletedResults.length.should.equal(2);
-      deletedResults[0].should.equal('db1');
-      deletedResults[1].should.equal('db2');
-      var ignoredResults = checks.db_teardowndatabases_results['Ignored databases (do not exist)'];
-      ignoredResults.length.should.equal(0);
-    });
-  });
-
-  describe('setUpDocuments', function () {
-
-    it('should pass error when db fetch gives an error', function (done) {
-      mocks.nano_fetch_err = new Error('someerror');
-      db = new (create(checks, mocks))('http://localhost:5984');
-      db.setUpDocuments({ 'db1': [], 'db2': [] }, function (err, results) {
-        checks.db_setupdocuments_err = err;
-        checks.db_setupdocuments_results = results;
-        done();
-      });
-      checks.db_setupdocuments_err.message.should.equal('someerror');
-      _.keys(checks.db_setupdocuments_results).length.should.equal(0);
-    });
-/ * commented out until https://github.com/felixge/node-sandboxed-module/issues/13 is resolved
- * that issue caused tasks array being passed to async.parallel to have x.constructor === Array to be false
- * and hence messing up results structure (object instead of array)
- * this test passes using async fork with array check patched to use Array.isArray
-    it('should create inexisting documents', function (done) {
-      mocks.nano_fetch_results = [{
-        rows: []
-      }];
-      db = new (create(checks, mocks))('http://localhost:5984');
-      db.setUpDocuments({ 'db1': [{ _id: 'doc1' }, { _id: 'doc2' }] }, function (err, results) {
-        checks.db_setupdocuments_err = err;
-        checks.db_setupdocuments_results = results;
-        done();
-      });
-      should.not.exist(checks.db_setupdocuments_err);
-      checks.nano_fetch_keys.length.should.equal(2);
-      checks.nano_fetch_keys[0].should.equal('doc1');
-      checks.nano_fetch_keys[1].should.equal('doc2');
-      var createdResults = checks.db_setupdocuments_results['Created documents in database db1'];
-      createdResults.length.should.equal(2);
-      createdResults[0].should.equal('doc1');
-      createdResults[1].should.equal('doc2');
-      var updatedResults = checks.db_setupdocuments_results['Updated documents (already exist) in database db1'];
-      updatedResults.length.should.equal(0);
-    });
-
-    it('should update existing documents', function (done) {
-      mocks.nano_fetch_results = [{
-        rows: [ { key: 'doc1', doc: { _id: 'doc1' } }, { key: 'doc2', doc: { _id: 'doc2' } } ]
-      }];
-      db = new (create(checks, mocks))('http://localhost:5984');
-      db.setUpDocuments({ 'db1': [{ _id: 'doc1' }, { _id: 'doc2' }] }, function (err, results) {
-        checks.db_setupdocuments_err = err;
-        checks.db_setupdocuments_results = results;
-        done();
-      });
-      should.not.exist(checks.db_setupdocuments_err);
-      checks.nano_fetch_keys.length.should.equal(2);
-      checks.nano_fetch_keys[0].should.equal('doc1');
-      checks.nano_fetch_keys[1].should.equal('doc2');
-      var createdResults = checks.db_setupdocuments_results['Created documents in database db1'];
-      createdResults.length.should.equal(0);
-      var updatedResults = checks.db_setupdocuments_results['Updated documents (already exist) in database db1'];
-      updatedResults.length.should.equal(2);
-      updatedResults[0].should.equal('doc1');
-      updatedResults[1].should.equal('doc2');
-    });
- * /
-  });
-
-  describe('tearDownDocuments', function () {
-
-    it('should pass error when db fetch gives an error', function (done) {
-      mocks.nano_fetch_err = new Error('someerror');
-      db = new (create(checks, mocks))('http://localhost:5984');
-      db.tearDownDocuments({ 'db1': [], 'db2': [] }, function (err, results) {
-        checks.db_teardowndocuments_err = err;
-        checks.db_teardowndocuments_results = results;
-        done();
-      });
-      checks.db_teardowndocuments_err.message.should.equal('someerror');
-      _.keys(checks.db_teardowndocuments_results).length.should.equal(0);
-    });
-/ * commented out until https://github.com/felixge/node-sandboxed-module/issues/13 is resolved
- * that issue caused tasks array being passed to async.parallel to have x.constructor === Array to be false
- * and hence messing up results structure (object instead of array)
- * this test passes using async fork with array check patched to use Array.isArray
-    it('should ignore inexisting documents', function (done) {
-      mocks.nano_fetch_results = [{
-        rows: []
-      }];
-      db = new (create(checks, mocks))('http://localhost:5984');
-      db.tearDownDocuments({ 'db1': [{ _id: 'doc1' }, { _id: 'doc2' }] }, function (err, results) {
-        checks.db_setupdocuments_err = err;
-        checks.db_setupdocuments_results = results;
-        done();
-      });
-      should.not.exist(checks.db_setupdocuments_err);
-      checks.nano_fetch_keys.length.should.equal(2);
-      checks.nano_fetch_keys[0].should.equal('doc1');
-      checks.nano_fetch_keys[1].should.equal('doc2');
-      var deletedResults = checks.db_setupdocuments_results['Deleted documents in database db1'];
-      deletedResults.length.should.equal(0);
-      var ignoredResults = checks.db_setupdocuments_results['Ignored documents (do not exist) in database db1'];
-      ignoredResults.length.should.equal(2);
-      ignoredResults[0].should.equal('doc1');
-      ignoredResults[1].should.equal('doc2');
-    });
-
-    it('should delete existing documents', function (done) {
-      mocks.nano_fetch_results = [{
-        rows: [ { key: 'doc1', doc: { _id: 'doc1' } }, { key: 'doc2', doc: { _id: 'doc2' } } ]
-      }];
-      db = new (create(checks, mocks))('http://localhost:5984');
-      db.tearDownDocuments({ 'db1': [{ _id: 'doc1' }, { _id: 'doc2' }] }, function (err, results) {
-        checks.db_setupdocuments_err = err;
-        checks.db_setupdocuments_results = results;
-        done();
-      });
-      should.not.exist(checks.db_setupdocuments_err);
-      checks.nano_fetch_keys.length.should.equal(2);
-      checks.nano_fetch_keys[0].should.equal('doc1');
-      checks.nano_fetch_keys[1].should.equal('doc2');
-      var deletedResults = checks.db_setupdocuments_results['Deleted documents in database db1'];
-      deletedResults.length.should.equal(2);
-      deletedResults[0].should.equal('doc1');
-      deletedResults[1].should.equal('doc2');
-      var ignoredResults = checks.db_setupdocuments_results['Ignored documents (do not exist) in database db1'];
-      ignoredResults.length.should.equal(0);
-    });
- * /
-  });
 });
-*/
+
+buster.testCase('db - removeDatabases', {
+  setUp: function () {
+    this._mockNano = function (destroyCb) {
+      return function (url) {
+        return { db: { destroy: destroyCb } };
+      };
+    };
+  },
+  'should remove databases successfully when the databases already exist': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(function (dbName, cb) { cb(null, { ok: 'true' }); })
+    });
+    db.removeDatabases(['db1', 'db2'], function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 2);
+      assert.equals(result[0].id, 'db1');
+      assert.equals(result[0].message, 'deleted');
+      assert.equals(result[1].id, 'db2');
+      assert.equals(result[1].message, 'deleted');
+      done();
+    });
+  },
+  'should display error message when remove databases fail because they do not exist': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(function (dbName, cb) { cb({ status_code: 404, error: 'missing' }); })
+    });
+    db.removeDatabases(['db1', 'db2'], function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 2);
+      assert.equals(result[0].id, 'db1');
+      assert.equals(result[0].message, 'missing (404)');
+      assert.equals(result[1].id, 'db2');
+      assert.equals(result[1].message, 'missing (404)');
+      done();
+    });
+  }
+});
+
+buster.testCase('db - cleanDatabases', {
+  setUp: function () {
+    this._mockNano = function (listCb) {
+      return function (url) {
+        return { db: { list: listCb } };
+      };
+    };
+  },
+  'should remove non-Couchpenter databases when they exist': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(function (cb) { cb(null, ['db1', 'db2', 'db3']); })
+    });
+    db.removeDatabases = function (dbNames, cb) {
+      assert.equals(dbNames.length, 1);
+      assert.equals(dbNames[0], 'db3');
+      done();
+    };
+    db.cleanDatabases(['db1', 'db2'], function (err, result) {
+      assert.equals(err.message, 'some error');
+      assert.equals(result, undefined);
+    });
+  },
+  'should not have any result when there is no non-Couchpenter databases to remove': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(function (cb) { cb(null, ['db1', 'db2']); })
+    });
+    db.removeDatabases = function (dbNames, cb) {
+      assert.equals(dbNames.length, 0);
+      done();
+    };
+    db.cleanDatabases(['db1', 'db2'], function (err, result) {
+      assert.equals(err.message, 'some error');
+      assert.equals(result, undefined);
+    });
+  },
+  'should pass standard error via callback': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(function (cb) { cb(new Error('some error')); })
+    });
+    db.cleanDatabases(['db1', 'db2'], function (err, result) {
+      assert.equals(err.message, 'some error');
+      assert.equals(result, undefined);
+      done();
+    });
+  }
+});
+
+buster.testCase('db - createDocuments', {
+  setUp: function () {
+    this._mockNano = function (insertCb) {
+      return function (url) {
+        return { use: function (dbName) { return { insert: insertCb }; }};
+      };
+    };
+  },
+  'should create documents successfully when the documents do not already exist': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(function (doc, cb) { cb(null, { ok: 'true' }); })
+    });
+    db.createDocuments({ db1: [{ _id: 'docA' }], db2: [{ _id: 'docB'}, { _id: 'docC'}] }, function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 3);
+      assert.equals(result[0].id, 'db1/docA');
+      assert.equals(result[0].message, 'created');
+      assert.equals(result[1].id, 'db2/docB');
+      assert.equals(result[1].message, 'created');
+      assert.equals(result[2].id, 'db2/docC');
+      assert.equals(result[2].message, 'created');
+      done();
+    });
+  },
+  'should display error message when create documents fail because they already exist': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(function (doc, cb) { cb({ status_code: 409, error: 'conflict' }); })
+    });
+    db.createDocuments({ db1: [{ _id: 'docA' }], db2: [{ _id: 'docB'}, { _id: 'docC'}] }, function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 3);
+      assert.equals(result[0].id, 'db1/docA');
+      assert.equals(result[0].message, 'conflict (409)');
+      assert.equals(result[1].id, 'db2/docB');
+      assert.equals(result[1].message, 'conflict (409)');
+      assert.equals(result[2].id, 'db2/docC');
+      assert.equals(result[2].message, 'conflict (409)');
+      done();
+    });
+  }
+});
+
+buster.testCase('db - saveDocuments', {
+  setUp: function () {
+    this._mockNano = function (insertCb, getCb) {
+      return function (url) {
+        return { use: function (dbName) { return { insert: insertCb, get: getCb }; }};
+      };
+    };
+  },
+  'should create documents successfully when the documents do not already exist': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(function (doc, cb) { cb(null, { ok: 'true' }); })
+    });
+    db.saveDocuments({ db1: [{ _id: 'docA' }], db2: [{ _id: 'docB'}, { _id: 'docC'}] }, function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 3);
+      assert.equals(result[0].id, 'db1/docA');
+      assert.equals(result[0].message, 'created');
+      assert.equals(result[1].id, 'db2/docB');
+      assert.equals(result[1].message, 'created');
+      assert.equals(result[2].id, 'db2/docC');
+      assert.equals(result[2].message, 'created');
+      done();
+    });
+  },
+  'should display error message when create documents fail because non conflict error': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(
+        function (doc, cb) {
+          if (doc._rev) {
+            cb(null, { ok: 'true' });
+          } else {
+            cb({ status_code: 404, error: 'missing' });
+          }
+        },
+        function (id, cb) {
+          cb(null, { _rev: 'rev' + id });
+        }
+      )
+    });
+    db.saveDocuments({ db1: [{ _id: 'docA' }], db2: [{ _id: 'docB'}, { _id: 'docC'}] }, function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 3);
+      assert.equals(result[0].id, 'db1/docA');
+      assert.equals(result[0].message, 'missing (404)');
+      assert.equals(result[1].id, 'db2/docB');
+      assert.equals(result[1].message, 'missing (404)');
+      assert.equals(result[2].id, 'db2/docC');
+      assert.equals(result[2].message, 'missing (404)');
+      done();
+    });
+  },
+  'should update documents successfully when the document already exists': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(
+        function (doc, cb) {
+          if (doc._rev) {
+            cb(null, { ok: 'true' });
+          } else {
+            cb({ status_code: 409, error: 'conflict' });
+          }
+        },
+        function (id, cb) {
+          cb(null, { _rev: 'rev' + id });
+        }
+      )
+    });
+    db.saveDocuments({ db1: [{ _id: 'docA' }], db2: [{ _id: 'docB'}, { _id: 'docC'}] }, function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 3);
+      assert.equals(result[0].id, 'db1/docA');
+      assert.equals(result[0].message, 'updated');
+      assert.equals(result[1].id, 'db2/docB');
+      assert.equals(result[1].message, 'updated');
+      assert.equals(result[2].id, 'db2/docC');
+      assert.equals(result[2].message, 'updated');
+      done();
+    });
+  }
+});
+
+buster.testCase('db - removeDocuments', {
+  setUp: function () {
+    this._mockNano = function (getCb, destroyCb) {
+      return function (url) {
+        return { use: function (dbName) { return { get: getCb, destroy: destroyCb }; }};
+      };
+    };
+  },
+  'should remove documents successfully when the documents already exist': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(
+        function (id, cb) {
+          cb(null, { _rev: 'rev' + id });
+        },
+        function (doc, rev, cb) {
+          cb(null, { ok: 'true' });
+        }
+      )
+    });
+    db.removeDocuments({ db1: [{ _id: 'docA' }], db2: [{ _id: 'docB'}, { _id: 'docC'}] }, function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 3);
+      assert.equals(result[0].id, 'db1/docA');
+      assert.equals(result[0].message, 'deleted');
+      assert.equals(result[1].id, 'db2/docB');
+      assert.equals(result[1].message, 'deleted');
+      assert.equals(result[2].id, 'db2/docC');
+      assert.equals(result[2].message, 'deleted');
+      done();
+    });
+  },
+  'should display error message when documents do not exist': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(
+        function (id, cb) {
+          cb({ status_code: 404, error: 'missing' });
+        }
+      )
+    });
+    db.removeDocuments({ db1: [{ _id: 'docA' }], db2: [{ _id: 'docB'}, { _id: 'docC'}] }, function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.length, 3);
+      assert.equals(result[0].id, 'db1/docA');
+      assert.equals(result[0].message, 'missing (404)');
+      assert.equals(result[1].id, 'db2/docB');
+      assert.equals(result[1].message, 'missing (404)');
+      assert.equals(result[2].id, 'db2/docC');
+      assert.equals(result[2].message, 'missing (404)');
+      done();
+    });
+  }
+});
+
+buster.testCase('db - _handle', {
+  setUp: function () {
+    this.db = new Db('http://localhost:5984', { nano: function (url) {} });
+  },
+  'should return result object when there is no error': function (done) {
+    function _cb(err, result) {
+      assert.isNull(err);
+      assert.equals(result.id, 'db1/doc1');
+      assert.equals(result.message, 'created');
+      done();
+    }
+    this.db._handle(_cb, { dbName: 'db1', docId: 'doc1', message: 'created' })();
+  },
+  'should delegate to optional success callback when there is no error and success callback is specified': function (done) {
+    function _successCb(err, result) {
+      assert.isNull(err);
+      assert.equals(result.ok, 'true');
+      done();
+    }
+    this.db._handle(null, { dbName: 'db1', docId: 'doc1', message: 'created', successCb: _successCb })(null, { ok: 'true' });
+  },
+  'should camouflage error as result when there is a CouchDB error (error has status_code)': function (done) {
+    function _cb(err, result) {
+      assert.isNull(err);
+      assert.equals(result.id, 'db1/doc1');
+      assert.equals(result.message, 'conflict (419)');
+      done();
+    }
+    this.db._handle(_cb, { dbName: 'db1', docId: 'doc1' })({ status_code: 419, error: 'conflict' });
+  },
+  'should pass error via callback when there is a standard error (e.g. connection refused)': function (done) {
+    function _cb(err, result) {
+      assert.equals(err.message, 'some error');
+      assert.equals(result, undefined);
+      done();
+    }
+    this.db._handle(_cb, { dbName: 'db1', docId: 'doc1' })(new Error('some error'));
+  },
+  'should delegate to optional error callback when error code matches status_code': function (done) {
+    function _errorCb(err, result) {
+      assert.equals(err.status_code, 419);
+      assert.equals(err.error, 'conflict');
+      assert.equals(result, undefined);
+      done();
+    }
+    this.db._handle(null, { dbName: 'db1', docId: 'doc1', errorCb: _errorCb, errorCode: 419 })({ status_code: 419, error: 'conflict' });
+  }
+});
