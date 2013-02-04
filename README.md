@@ -43,15 +43,18 @@ Tasks:
 
 <table>
 <tr><th>Task</th><th>Description</th></tr>
-<tr><td>setup</td><td>Create databases, then create/update documents.</td></tr>
+<tr><td>setup</td><td>Create databases and documents.</td></tr>
 <tr><td>setup-db</td><td>Create databases only.</td></tr>
-<tr><td>setup-doc</td><td>Create documents only.</td></tr>
-<tr><td>teardown</td><td>Delete databases, including documents.</td></tr>
-<tr><td>teardown-db</td><td>Alias for teardown</td></tr>
-<tr><td>teardown-doc</td><td>Delete documents only.</td></tr>
-<tr><td>reset</td><td>Delete then recreate databases and documents.</td></tr>
-<tr><td>reset-db</td><td>Alias for reset</td></tr>
+<tr><td>setup-doc</td><td> Create documents only, does not overwrite if exist.</td></tr>
+<tr><td>setup-doc-overwrite</td><td>Create documents only, overwrite if exist.</td></tr>
+<tr><td>teardown</td><td>Alias for teardown-db.</td></tr>
+<tr><td>teardown-db</td><td>Delete databases.</td></tr>
+<tr><td>teardown-doc</td><td>Delete documents.</td></tr>
+<tr><td>reset</td><td>Alias for reset-doc.</td></tr>
+<tr><td>reset-db</td><td>Delete then recreate databases and documents.</td></tr>
 <tr><td>reset-doc</td><td>Delete then recreate documents only.</td></tr>
+<tr><td>clean</td><td>Alias for clean-db.</td></tr>
+<tr><td>clean-db</td><td>Delete unknown databases (not configured in setup file).</td></tr>
 </table>
 
 Programmatically:
@@ -94,20 +97,22 @@ Programmatically:
     );
 
     // set up databases and documents
-    couchpenter.setUp(function (err, result) {
+    couchpenter.setUp(function (err, results) {
     });
 
     // delete databases and documents
-    couchpenter.tearDown(function (err, result) {
+    couchpenter.tearDown(function (err, results) {
     });
 
     // delete databases and documents, then set up databases and documents
-    couchpenter.reset(function (err, result) {
+    couchpenter.reset(function (err, results) {
     });
 
     // delete documents, then set up documents
-    couchpenter.resetDocuments(function (err, result) {
+    couchpenter.resetDocuments(function (err, results) {
     });
+
+Check out [lib/couchpenter](https://github.com/cliffano/couchpenter/blob/master/lib/couchpenter.js) for other available methods.
 
 Configuration
 -------------
@@ -147,4 +152,4 @@ A document can be represented as:
 * a file path string containing a JSON document, file name must end with .json
 * a module path string
 
-Paths are relative to current directory if it's used from command-line, or relative to dir opt if it's used programmatically (defaults to current directory).
+Paths are relative to current directory if it's used from command-line, or relative to opts.dir if it's used programmatically (defaults to current directory if opts.dir is not specified).
