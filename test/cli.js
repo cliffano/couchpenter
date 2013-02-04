@@ -36,7 +36,6 @@ buster.testCase('cli - init', {
       exit: bag.cli.exit
     });
     this.stub(Couchpenter.prototype, 'init', function (cb) {
-      // TODO: investigate bag stub inconsistency: console.dir(bag.cli);
       assert.equals(typeof bag.cli.exit, 'function');
       done();
     });
@@ -61,6 +60,7 @@ buster.testCase('cli - task', {
         command: function (base, actions) {
           actions.commands[command].action({ url: 'http://someurl', setupFile: 'somesetupfile', dir: 'somedir' });
         },
+        exit: bag.cli.exit,
         exitCb: bag.cli.exitCb
       });
       cli.exec();
