@@ -1,4 +1,7 @@
-### 0.2.0-pre
+### 0.2.1-pre
+*
+
+### 0.2.0
 * Add setup-doc-overwrite, clean, and clean-db cli targets
 * Support local document (with _local/* ID) by replacing bulk documents operation with one operation per database/document (tradeoff performance for completeness)
 * Change cli output to display one database/document operation per line (used to be grouped)
