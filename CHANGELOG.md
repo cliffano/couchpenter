@@ -3,7 +3,7 @@
 * Support local document (with _local/* ID) by replacing bulk documents operation with one operation per database/document (tradeoff performance for completeness)
 * Change cli output to display one database/document operation per line (used to be grouped)
 * Change result format, was 2-dimensional array of strings, now 1-dimensional array of result objects in format { id: , error: , message: }. Error will be undefined when that particular result is a success.
-* couchpenter#setUpDocuments now no longer allow update/overwrite (e.g. if documents already exist, it will result in conflict (419)), use couchpenter#setUpDocumentsOverwrite to update/overwrite documents (if it doesn't exist then create the document, if it already exists then update the document)
+* couchpenter#setUpDocuments now no longer allows update/overwrite (e.g. if documents already exist, it will result in conflict (419)), use couchpenter#setUpDocumentsOverwrite to update/overwrite documents (if it doesn't exist then create the document, if it already exists then update the document)
 
 ### 0.1.3
 * Add couchpenter#resetDocuments to delete then reset documents programatically.
