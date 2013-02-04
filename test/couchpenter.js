@@ -41,7 +41,7 @@ buster.testCase('couchpenter - task', {
     couchpenter.setUp(function (err, result) {
       assert.equals(self.calls.length, 2);
       assert.equals(self.calls[0], 'createDatabases');
-      assert.equals(self.calls[1], 'createDocuments');
+      assert.equals(self.calls[1], 'saveDocuments');
       done();
     });
   },

@@ -4,7 +4,7 @@
       "desc": "Create sample setup file\nUsage: couchpenter init"
     },
     "setup": {
-      "desc": "Create databases and documents\nUsage: couchpenter [-u/--url <url>] [-f/--setup-file <setupFile>] [-d/--dir <dir>] setup",
+      "desc": "Create databases and documents, overwrite if documents exist\nUsage: couchpenter [-u/--url <url>] [-f/--setup-file <setupFile>] [-d/--dir <dir>] setup",
       "options": [
         { "arg": "-u, --url <url>", "desc": "CouchDB URL in format http://user:pass@host:port, default: http://localhost:5984" },
         { "arg": "-f, --setup-file <setupFile>", "desc": "Setup file, default: couchpenter.json" },
