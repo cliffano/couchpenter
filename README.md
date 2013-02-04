@@ -43,7 +43,7 @@ Tasks:
 
 <table>
 <tr><th>Task</th><th>Description</th></tr>
-<tr><td>setup</td><td>Create databases and documents.</td></tr>
+<tr><td>setup</td><td>Create databases and documents, overwrite if documents exist.</td></tr>
 <tr><td>setup-db</td><td>Create databases only.</td></tr>
 <tr><td>setup-doc</td><td> Create documents only, does not overwrite if exist.</td></tr>
 <tr><td>setup-doc-overwrite</td><td>Create documents only, overwrite if exist.</td></tr>
