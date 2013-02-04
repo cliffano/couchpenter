@@ -34,7 +34,7 @@
     "bagofholding": "0.1.0",
     "fs.extra": "1.2.0",
     "nano": "3.3.6",
-    "underscore": "1.4.3"
+    "underscore": "1.4.4"
   },
   "devDependencies": {
     "buster": "0.6.12",
