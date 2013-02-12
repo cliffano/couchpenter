@@ -1,10 +1,25 @@
-var buster = require('buster'),
+var bag = require('bagofholding'),
+  buster = require('buster'),
   Db = require('../lib/db');
+
+buster.testCase('db - db', {
+  'should set proxy to nano when proxy environment variable is set': function () {
+    this._mockNano = function () {
+      return function (opts) {
+        assert.equals(opts.request_defaults.proxy, 'http://someproxy');
+        return { db: {} };
+      };
+    };
+    this.stub(bag, 'http', { proxy: function () { return 'http://someproxy'; }});
+    new Db('http://localhost:5984', { nano: this._mockNano() });
+  }
+});
 
 buster.testCase('db - createDatabases', {
   setUp: function () {
     this._mockNano = function (createCb) {
-      return function (url) {
+      return function (opts) {
+        assert.equals(opts.url, 'http://localhost:5984');
         return { db: { create: createCb } };
       };
     };

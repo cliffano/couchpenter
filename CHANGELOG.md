@@ -1,5 +1,5 @@
 ### 0.2.1-pre
-*
+* Add proxy support via http(s)_proxy environment variable
 
 ### 0.2.0
 * Add setup-doc-overwrite, clean, and clean-db cli targets
