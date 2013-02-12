@@ -1,4 +1,7 @@
-### 0.2.1-pre
+### 0.2.2-pre
+* 
+
+### 0.2.1
 * Add proxy support via http(s)_proxy environment variable
 
 ### 0.2.0
