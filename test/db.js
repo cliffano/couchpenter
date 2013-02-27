@@ -314,6 +314,49 @@ buster.testCase('db - removeDocuments', {
   }
 });
 
+buster.testCase('db - warmViews', {
+  setUp: function () {
+    this._mockNano = function (viewCb) {
+      return function (url) {
+        return { use: function (dbName) { return { view: viewCb }; }};
+      };
+    };
+  },
+  'should ignore documents that are not design docs': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(null)
+    });
+    db.warmViews({ db1: [{ _id: 'docA' } ] }, function (err, result) {
+      assert.isTrue(err === null || err === undefined);
+      assert.equals(result.length, 0);
+      done();
+    });
+  },
+  'should exercise each view in design docs': function (done) {
+    var viewInvocations = [], db = new Db('http://localhost:5984', {
+      nano: this._mockNano(
+        function (designName, viewName, params, cb) {
+          viewInvocations.push({ designName: designName, viewName: viewName, params: params });
+          cb(null, { results: [ { seq: 15, id: 'abcdef', changes: [ { rev: '2-abcdef' } ], deleted: true } ], 
+                     last_seq: 15 });
+        }
+      )
+    });
+    db.warmViews({ db1: [{ _id: 'docA' }, { _id: '_design/designName', views: { view1: {}, view2: {} } } ] }, 
+                 function (err, result) {
+                   assert.isNull(err);
+                   assert.equals(result.length, 1);
+                   assert.equals(result[0].id, 'db1/_design/designName');
+                   assert.equals(result[0].message, 'warmed 2 views');
+                   assert.equals(viewInvocations.length, 2);                   
+                   assert.equals(viewInvocations[0].viewName, 'view1');
+                   assert.equals(viewInvocations[1].viewName, 'view2');
+                   done();
+                 });
+  }
+
+});
+
 buster.testCase('db - _handle', {
   setUp: function () {
     this.db = new Db('http://localhost:5984', { nano: function (url) {} });
