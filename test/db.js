@@ -12,6 +12,16 @@ buster.testCase('db - db', {
     };
     this.stub(bag, 'http', { proxy: function () { return 'http://someproxy'; }});
     new Db('http://localhost:5984', { nano: this._mockNano() });
+  },
+  'should not set request_defaults when there is no proxy environment variable': function () {
+    this._mockNano = function () {
+      return function (opts) {
+        assert.equals(opts.request_defaults, undefined);
+        return { db: {} };
+      };
+    };
+    this.stub(bag, 'http', { proxy: function () { return null; }});
+    new Db('http://localhost:5984', { nano: this._mockNano() });
   }
 });
 
