@@ -360,7 +360,7 @@ buster.testCase('db - warmViews', {
        assert.isNull(err);
        assert.equals(result.length, 1);
        assert.equals(result[0].id, 'db1/_design/somedesigndoc');
-       assert.equals(result[0].message, 'warmed 2 views');
+       assert.equals(result[0].message, 'warmed view1, view2');
        done();
      });
   }
