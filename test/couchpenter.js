@@ -1,6 +1,7 @@
 var bag = require('bagofholding'),
   buster = require('buster'),
   Couchpenter = require('../lib/couchpenter'),
+  cron = require('cron'),
   Db = require('../lib/db'),
   fs = require('fs'),
   fsx = require('fs.extra');
@@ -35,6 +36,7 @@ buster.testCase('couchpenter - task', {
     this.stub(Db.prototype, 'saveDocuments', function (data, cb) { self.calls.push('saveDocuments'); cb(); });
     this.stub(Db.prototype, 'removeDocuments', function (data, cb) { self.calls.push('removeDocuments'); cb(); });
     this.stub(Db.prototype, 'warmViews', function (data, cb) { self.calls.push('warmViews'); cb(); });
+    this.mockCron = this.mock(cron);
   },
   'should call correct tasks for setUp method': function (done) {
     var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
@@ -154,6 +156,16 @@ buster.testCase('couchpenter - task', {
     var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
       self = this;
     couchpenter.warmViews(function (err, result) {
+      assert.equals(self.calls.length, 1);
+      assert.equals(self.calls[0], 'warmViews');
+      done();
+    });
+  },
+  'should schedule task for warmViews method with cron schedule definition': function (done) {
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+      self = this;
+    this.mockCron.expects('CronJob').once().withArgs('* * * * *').callsArgWith(1);
+    couchpenter.warmViews('* * * * *', function (err, result) {
       assert.equals(self.calls.length, 1);
       assert.equals(self.calls[0], 'warmViews');
       done();

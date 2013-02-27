@@ -1,5 +1,5 @@
 ### 0.2.2-pre
-* 
+* Add warm-view target with cron scheduling support via couchpenter#warmViews.
 
 ### 0.2.1
 * Add proxy support via http(s)_proxy environment variable

@@ -117,6 +117,10 @@ Programmatically:
     couchpenter.warmViews(function (err, results) {
     });
 
+    // warm up all views specified in design documents every minute (scheduled)
+    couchpenter.warmViews('* * * * *', function (err, results) {
+    });
+
 Check out [lib/couchpenter](https://github.com/cliffano/couchpenter/blob/master/lib/couchpenter.js) for other available methods.
 
 Configuration

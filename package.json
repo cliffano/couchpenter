@@ -32,8 +32,9 @@
   "dependencies": {
     "async": "0.2.5",
     "bagofholding": "0.1.1",
+    "cron": "1.0.1",
     "fs.extra": "1.2.0",
-    "nano": "3.3.6",
+    "nano": "3.3.7",
     "underscore": "1.4.4"
   },
   "devDependencies": {
