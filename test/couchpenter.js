@@ -170,6 +170,16 @@ buster.testCase('couchpenter - task', {
       assert.equals(self.calls[0], 'warmViews');
       done();
     });
+  },
+  'should pass a message when views warm up schedule is stopped': function (done) {
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+      self = this;
+    this.mockCron.expects('CronJob').once().withArgs('* * * * *').callsArgWith(2);
+    couchpenter.warmViews('* * * * *', function (err, result) {
+      assert.equals(result.id, 'couchpenter');
+      assert.equals(result.message, 'stopped views warm up schedule');
+      done();
+    });
   }
 });
 
