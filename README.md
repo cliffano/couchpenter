@@ -55,6 +55,7 @@ Tasks:
 <tr><td>reset-doc</td><td>Delete then recreate documents only.</td></tr>
 <tr><td>clean</td><td>Alias for clean-db.</td></tr>
 <tr><td>clean-db</td><td>Delete unknown databases (not configured in setup file).</td></tr>
+<tr><td>warm-view</td><td>Warm up views specified in design documents.</td></tr>
 </table>
 
 Programmatically:
@@ -110,6 +111,10 @@ Programmatically:
 
     // delete documents, then set up documents
     couchpenter.resetDocuments(function (err, results) {
+    });
+
+    // warm up all views specified in design documents
+    couchpenter.warmViews(function (err, results) {
     });
 
 Check out [lib/couchpenter](https://github.com/cliffano/couchpenter/blob/master/lib/couchpenter.js) for other available methods.

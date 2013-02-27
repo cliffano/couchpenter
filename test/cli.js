@@ -20,6 +20,7 @@ buster.testCase('cli - exec', {
       assert.defined(actions.commands['reset-doc'].action);
       assert.defined(actions.commands.clean.action);
       assert.defined(actions.commands['clean-db'].action);
+      assert.defined(actions.commands['warm-view'].action);
       done();
     };
     this.stub(bag, 'cli', { command: mockCommand });
@@ -79,5 +80,6 @@ buster.testCase('cli - task', {
     this._test('reset-doc', 'resetDocuments');
     this._test('clean', 'clean');
     this._test('clean-db', 'cleanDatabases');
+    this._test('warm-view', 'warmViews');
   }
 });
