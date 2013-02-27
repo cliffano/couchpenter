@@ -324,35 +324,35 @@ buster.testCase('db - warmViews', {
   },
   'should ignore documents that are not design docs': function (done) {
     var db = new Db('http://localhost:5984', {
-      nano: this._mockNano(null)
+      nano: this._mockNano()
     });
     db.warmViews({ db1: [{ _id: 'docA' } ] }, function (err, result) {
-      assert.isTrue(err === null || err === undefined);
+      assert.equals(err, undefined);
       assert.equals(result.length, 0);
       done();
     });
   },
   'should exercise each view in design docs': function (done) {
-    var viewInvocations = [], db = new Db('http://localhost:5984', {
-      nano: this._mockNano(
-        function (designName, viewName, params, cb) {
-          viewInvocations.push({ designName: designName, viewName: viewName, params: params });
-          cb(null, { results: [ { seq: 15, id: 'abcdef', changes: [ { rev: '2-abcdef' } ], deleted: true } ], 
-                     last_seq: 15 });
-        }
-      )
-    });
-    db.warmViews({ db1: [{ _id: 'docA' }, { _id: '_design/designName', views: { view1: {}, view2: {} } } ] }, 
-                 function (err, result) {
-                   assert.isNull(err);
-                   assert.equals(result.length, 1);
-                   assert.equals(result[0].id, 'db1/_design/designName');
-                   assert.equals(result[0].message, 'warmed 2 views');
-                   assert.equals(viewInvocations.length, 2);                   
-                   assert.equals(viewInvocations[0].viewName, 'view1');
-                   assert.equals(viewInvocations[1].viewName, 'view2');
-                   done();
-                 });
+    var viewInvocations = [],
+      db = new Db('http://localhost:5984', {
+        nano: this._mockNano(
+          function (designDocName, viewName, params, cb) {
+            assert.equals(designDocName, 'somedesigndoc');
+            assert.isTrue(viewName === 'view1' || viewName === 'view2');
+            assert.equals(params.limit, 0);
+            viewInvocations.push({ designDocName: designDocName, viewName: viewName, params: params });
+            cb(null, { results: [ { seq: 15, id: 'abcdef', changes: [ { rev: '2-abcdef' } ], deleted: true } ], last_seq: 15 });
+          }
+        )
+      });
+    db.warmViews({ db1: [{ _id: 'docA' }, { _id: '_design/somedesigndoc', views: { view1: {}, view2: {} } } ] }, 
+     function (err, result) {
+       assert.isNull(err);
+       assert.equals(result.length, 1);
+       assert.equals(result[0].id, 'db1/_design/somedesigndoc');
+       assert.equals(result[0].message, 'warmed 2 views');
+       done();
+     });
   }
 
 });
