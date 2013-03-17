@@ -1,4 +1,4 @@
-Couchpenter [![http://travis-ci.org/cliffano/couchpenter](https://secure.travis-ci.org/cliffano/couchpenter.png?branch=master)](http://travis-ci.org/cliffano/couchpenter)
+Couchpenter [![Build Status](https://secure.travis-ci.org/cliffano/couchpenter.png?branch=master)](http://travis-ci.org/cliffano/couchpenter) [![Dependencies Status](https://david-dm.org/cliffano/couchpenter.png)](http://david-dm.org/cliffano/couchpenter)
 -----------
 
 Couchpenter is a CouchDB database and document setup tool.
