@@ -21,6 +21,7 @@ buster.testCase('cli - exec', {
       assert.defined(actions.commands.clean.action);
       assert.defined(actions.commands['clean-db'].action);
       assert.defined(actions.commands['warm-view'].action);
+      assert.defined(actions.commands['live-deploy-view'].action);
       done();
     };
     this.stub(bag, 'cli', { command: mockCommand });
