@@ -60,7 +60,7 @@ buster.testCase('cli - task', {
       });
       self.stub(bag, 'cli', {
         command: function (base, actions) {
-          actions.commands[command].action({ url: 'http://someurl', setupFile: 'somesetupfile', dir: 'somedir' });
+          actions.commands[command].action({ url: 'http://someurl', setupFile: 'somesetupfile', dir: 'somedir', interval: 2000 });
         },
         exit: bag.cli.exit,
         exitCb: bag.cli.exitCb
