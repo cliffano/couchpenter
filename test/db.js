@@ -1,4 +1,5 @@
-var bag = require('bagofholding'),
+var _ = require ('underscore'),
+  bag = require('bagofholding'),
   buster = require('buster'),
   Db = require('../lib/db');
 
@@ -366,6 +367,332 @@ buster.testCase('db - warmViews', {
   }
 
 });
+
+
+buster.testCase('db - liveDeployView', {
+  setUp: function () {
+    this.mockConsole = this.mock(console);
+    this._mockNano = function (viewCb, requestCb, headCb, copyCb) {
+      return function (url) {
+        return { 
+          use: function(dbName) { 
+            return { 
+              view: viewCb,
+              head: headCb,
+              copy: copyCb
+           }; 
+          },
+          request: requestCb
+        };
+      };
+    };
+  },
+  'should ignore non design docs': function (done) {
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(),
+      interval: 0
+    });
+    db.liveDeployView({ db1: [{ _id: 'docA' } ] }, function (err, result) {
+      assert.equals(err, null);
+      assert.isTrue(_.isEmpty(result.length));
+      done();
+    });
+  },
+  'should kickoff index for each views in design docs': function (done) {
+    this.mockConsole.expects('log').twice().withExactArgs('%s - view index updater running: %s', 'somename', false);
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(
+        // view
+        function(docid, viewName, opts, cb) {
+          cb(undefined, {_id: 'docA' });
+        }, 
+        //request
+        function(opts, cb) {
+          var result = { name: 'somename', view_index: { updater_running: false } };
+          cb(undefined, result);
+        },
+        //headCb 
+        function(docid, cb) {
+          cb(undefined, { something: 'undescore' }, { some: 'headers' });
+        },
+        //copyCb
+        function(docid, new_docid, opts, cb) {
+          cb(undefined, { message: ' success' });
+        }
+      ),
+      interval: 1
+    });
+    db.removeDocuments = function (dbSetup, cb) {
+      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.defined(dbSetup.db1[0].views);
+      assert.defined(dbSetup.db1[0].views.somename);
+      assert.equals('_design/content2_new', dbSetup.db1[1]._id);
+      assert.defined(dbSetup.db1[1].views);
+      assert.defined(dbSetup.db1[1].views.somename);
+      cb(undefined, {ok: true});
+    };
+    db.saveDocuments = function (dbSetup, cb) {
+      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.defined(dbSetup.db1[0].views);
+      assert.defined(dbSetup.db1[0].views.somename);
+      assert.equals('_design/content2_new', dbSetup.db1[1]._id);
+      assert.defined(dbSetup.db1[1].views);
+      assert.defined(dbSetup.db1[1].views.somename);
+      cb(undefined, {ok: true});
+    };
+
+    db.liveDeployView(
+      { db1: 
+        [ 
+          { _id: '_design/content',
+            views: {
+              somename: {
+                map: function(doc) { }
+              }
+            },
+            lists: {},
+            language: 'javascript',
+            filters: {},
+            shows: {} 
+          },
+          { _id: '_design/content2',
+            views: {
+              somename: {
+                map: function(doc) { }
+              }
+            },
+            lists: {},
+            language: 'javascript',
+            filters: {},
+            shows: {} 
+          }
+        ] 
+      }, 
+     function (err, result) {
+       assert.isNull(err);
+       assert.isFalse(_.isEmpty(result));
+       assert.equals('view index has been kicked off', result[0][1][0].message);
+       assert.equals('view index has been kicked off', result[0][1][1].message);
+       done();
+    });
+  },
+  'should overwrite the old design doc with the new one regardless of whether old design doc exists or not': function (done) {
+    this.mockConsole.expects('log').twice().withExactArgs('%s - view index updater running: %s', 'somename', false);
+    var db = new Db('http://localhost:5984', {
+      nano: this._mockNano(
+        // view
+        function(docid, viewName, opts, cb) {
+          cb(undefined, {_id: 'docA' });
+        }, 
+        //request
+        function(opts, cb) {
+          var result = { name: 'somename', view_index: { updater_running: false } };
+          cb(undefined, result);
+        },
+        //headCb 
+        function(docid, cb) {
+          cb({err: 'conflict', status: '409'}, undefined, { some: 'headers' });
+        },
+        //copyCb
+        function(docid, new_docid, opts, cb) {
+          cb(undefined, { message: 'success' });
+        }
+      ),
+      interval: 1
+    });
+    db.removeDocuments = function (dbSetup, cb) {
+      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.defined(dbSetup.db1[0].views);
+      assert.defined(dbSetup.db1[0].views.somename);
+      assert.equals('_design/content2_new', dbSetup.db1[1]._id);
+      assert.defined(dbSetup.db1[1].views);
+      assert.defined(dbSetup.db1[1].views.somename);
+      cb(undefined, {ok: true});
+    };
+    db.saveDocuments = function (dbSetup, cb) {
+      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.defined(dbSetup.db1[0].views);
+      assert.defined(dbSetup.db1[0].views.somename);
+      assert.equals('_design/content2_new', dbSetup.db1[1]._id);
+      assert.defined(dbSetup.db1[1].views);
+      assert.defined(dbSetup.db1[1].views.somename);
+      cb(undefined, {ok: true});
+    };
+
+    db.liveDeployView(
+      { db1: 
+        [ 
+          { _id: '_design/content',
+            views: {
+              somename: {
+                map: function(doc) { }
+              }
+            },
+            lists: {},
+            language: 'javascript',
+            filters: {},
+            shows: {} 
+          },
+          { _id: '_design/content2',
+            views: {
+              somename: {
+                map: function(doc) { }
+              }
+            },
+            lists: {},
+            language: 'javascript',
+            filters: {},
+            shows: {} 
+          }
+        ] 
+      }, 
+     function (err, result) {
+       assert.isNull(err);
+       assert.isTrue(!_.isEmpty(result));
+       assert.equals("success", result[0][3][0].message);
+       assert.equals("success", result[0][3][1].message);
+       done();
+    });
+  },
+  'should continue polling _info until index is fully built': function (done) {
+    this.mockConsole.expects('log').twice().withExactArgs('%s - view index updater running: %s', 'somename', false);
+    var db = new Db('http://localhost:5984', {
+        nano: this._mockNano(
+          // view
+          function(docid, viewName, opts, cb) {
+            cb(undefined, {_id: 'docA' });
+          }, 
+          //request
+          function(opts, cb) {
+            var result = { name: 'somename', view_index: { updater_running: false } };
+            cb(undefined, result);
+          },
+          //headCb 
+          function(docid, cb) {
+            cb({err: 'conflict', status: '409'}, undefined, { some: 'headers' });
+          },
+          //copyCb
+          function(docid, new_docid, opts, cb) {
+            cb(undefined, { message: ' success' });
+          }
+        ),
+        interval: 1
+      });
+    db.removeDocuments = function (dbSetup, cb) {
+      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.defined(dbSetup.db1[0].views);
+      assert.defined(dbSetup.db1[0].views.somename);
+      assert.equals('_design/content2_new', dbSetup.db1[1]._id);
+      assert.defined(dbSetup.db1[1].views);
+      assert.defined(dbSetup.db1[1].views.somename);
+      cb(undefined, {ok: true});
+    };
+    db.saveDocuments = function (dbSetup, cb) {
+      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.defined(dbSetup.db1[0].views);
+      assert.defined(dbSetup.db1[0].views.somename);
+      assert.equals('_design/content2_new', dbSetup.db1[1]._id);
+      assert.defined(dbSetup.db1[1].views);
+      assert.defined(dbSetup.db1[1].views.somename);
+      cb(undefined, {ok: true});
+    };
+
+    db.liveDeployView(
+      { db1: 
+        [ 
+          { _id: '_design/content',
+            views: {
+              somename: {
+                map: function(doc) { }
+              }
+            },
+            lists: {},
+            language: 'javascript',
+            filters: {},
+            shows: {} 
+          },
+          { _id: '_design/content2',
+            views: {
+              somename: {
+                map: function(doc) { }
+              }
+            },
+            lists: {},
+            language: 'javascript',
+            filters: {},
+            shows: {} 
+          }
+        ] 
+      }, 
+     function (err, result) {
+       assert.isNull(err);
+       assert.isTrue(!_.isEmpty(result));
+       assert.isTrue(result[0][4].ok);
+       done();
+    });
+  },
+  'should stop polling _info when couchdb error occurs': function (done) {
+    this.mockConsole.expects('log').once().withExactArgs('%s - %s', '_design/content_new', {error: 'Not Found'});
+    var db = new Db('http://localhost:5984', {
+        nano: this._mockNano(
+          // view
+          function(docid, viewName, opts, cb) {
+            cb(undefined, {_id: 'docA' });
+          }, 
+          //request
+          function(opts, cb) {
+            cb({error: 'Not Found'}, undefined);
+          },
+          //headCb 
+          function(docid, cb) {
+            cb({err: 'conflict', status: '409'}, undefined, { some: 'headers' });
+          },
+          //copyCb
+          function(docid, new_docid, opts, cb) {
+            cb(undefined, { message: ' success' });
+          }
+        ),
+        interval: 1
+      });
+    db.removeDocuments = function (dbSetup, cb) {
+      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.defined(dbSetup.db1[0].views);
+      assert.defined(dbSetup.db1[0].views.somename);
+      cb(undefined, {ok: true});
+    };
+    db.saveDocuments = function (dbSetup, cb) {
+      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.defined(dbSetup.db1[0].views);
+      assert.defined(dbSetup.db1[0].views.somename);
+      cb(undefined, {ok: true});
+    };
+
+    db.liveDeployView(
+      { db1: 
+        [ 
+          { _id: '_design/content',
+            views: {
+              somename: {
+                map: function(doc) { }
+              }
+            },
+            lists: {},
+            language: 'javascript',
+            filters: {},
+            shows: {} 
+          }
+        ] 
+      }, 
+     function (err, result) {
+       assert.isNull(err);
+       assert.isTrue(!_.isEmpty(result));
+       assert.isTrue(result[0][4].ok);
+       done();
+    });
+  }
+
+});
+
 
 buster.testCase('db - _handle', {
   setUp: function () {
