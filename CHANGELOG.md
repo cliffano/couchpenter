@@ -1,8 +1,8 @@
 ### 0.2.3-pre
-*
+* Add live-deploy-view target couchpenter#liveDeployView (Gary Chin)
 
 ### 0.2.2
-* Add warm-view target with cron scheduling support via couchpenter#warmViews.
+* Add warm-view target with cron scheduling support via couchpenter#warmViews (Daniel Bell)
 
 ### 0.2.1
 * Add proxy support via http(s)_proxy environment variable
