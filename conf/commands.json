@@ -106,6 +106,15 @@
         { "arg": "-f, --setup-file <setupFile>", "desc": "Setup file, default: couchpenter.json" },
         { "arg": "-d, --dir <dir>", "desc": "Documents directory, default: current working directory" }
       ]
+    },
+    "live-deploy-view": {
+      "desc": "Deploy view changes on live environment\nUsage: couchpenter [-u/--url <url>] [-f/--setup-file <setupFile>] [-d/--dir <dir>] live-deploy-view",
+      "options": [
+        { "arg": "-u, --url <url>", "desc": "CouchDB URL in format http://user:pass@host:port, default: http://localhost:5984" },
+        { "arg": "-f, --setup-file <setupFile>", "desc": "Setup file, default: couchpenter.json" },
+        { "arg": "-d, --dir <dir>", "desc": "Documents directory, default: current working directory" },
+        { "arg": "-i, --interval <interval>", "desc": "Index progress check interval, default: 10000ms" }
+      ]
     }
   }
 }

@@ -32,6 +32,7 @@
   "dependencies": {
     "async": "0.2.6",
     "bagofholding": "0.1.2",
+    "clone": "0.1.6",
     "cron": "1.0.1",
     "fs.extra": "1.2.0",
     "nano": "3.3.8",

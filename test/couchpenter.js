@@ -36,6 +36,7 @@ buster.testCase('couchpenter - task', {
     this.stub(Db.prototype, 'saveDocuments', function (data, cb) { self.calls.push('saveDocuments'); cb(); });
     this.stub(Db.prototype, 'removeDocuments', function (data, cb) { self.calls.push('removeDocuments'); cb(); });
     this.stub(Db.prototype, 'warmViews', function (data, cb) { self.calls.push('warmViews'); cb(); });
+    this.stub(Db.prototype, 'liveDeployView', function (data, cb) { self.calls.push('liveDeployView'); cb(); });
     this.mockCron = this.mock(cron);
   },
   'should call correct tasks for setUp method': function (done) {
@@ -152,6 +153,17 @@ buster.testCase('couchpenter - task', {
       done();
     });
   },
+
+  'should call correct tasks for liveDeployView method': function (done) {
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+      self = this;
+    couchpenter.liveDeployView(function (err, result) {
+      assert.equals(self.calls.length, 1);
+      assert.equals(self.calls[0], 'liveDeployView');
+      done();
+    });
+  },
+
   'should call correct tasks for warmViews method': function (done) {
     var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
       self = this;
