@@ -375,7 +375,7 @@ buster.testCase('db - liveDeployView', {
     this._mockNano = function (viewCb, requestCb, headCb, copyCb) {
       return function (url) {
         return { 
-          use: function(dbName) { 
+          use: function (dbName) { 
             return { 
               view: viewCb,
               head: headCb,
@@ -392,7 +392,7 @@ buster.testCase('db - liveDeployView', {
       nano: this._mockNano(),
       interval: 0
     });
-    db.liveDeployView({ db1: [{ _id: 'docA' } ] }, function (err, result) {
+    db.liveDeployView({ db1: [{ _id: 'docA' }]}, function (err, result) {
       assert.equals(err, null);
       assert.isTrue(_.isEmpty(result.length));
       done();
@@ -402,43 +402,39 @@ buster.testCase('db - liveDeployView', {
     this.mockConsole.expects('log').twice().withExactArgs('%s - view index updater running: %s', 'somename', false);
     var db = new Db('http://localhost:5984', {
       nano: this._mockNano(
-        // view
-        function(docid, viewName, opts, cb) {
-          cb(undefined, {_id: 'docA' });
+        function (docId, viewName, opts, cb) {
+          cb(null, {_id: 'docA' });
         }, 
-        //request
-        function(opts, cb) {
-          var result = { name: 'somename', view_index: { updater_running: false } };
-          cb(undefined, result);
+        function (opts, cb) {
+          var result = { name: 'somename', view_index: { updater_running: false }};
+          cb(null, result);
         },
-        //headCb 
-        function(docid, cb) {
-          cb(undefined, { something: 'undescore' }, { some: 'headers' });
+        function (docId, cb) {
+          cb(null, { something: 'undescore' }, { some: 'headers' });
         },
-        //copyCb
-        function(docid, new_docid, opts, cb) {
-          cb(undefined, { message: ' success' });
+        function (docId, newDocId, opts, cb) {
+          cb(null, { message: ' success' });
         }
       ),
       interval: 1
     });
     db.removeDocuments = function (dbSetup, cb) {
-      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.equals(dbSetup.db1[0]._id, '_design/content_new');
       assert.defined(dbSetup.db1[0].views);
       assert.defined(dbSetup.db1[0].views.somename);
-      assert.equals('_design/content2_new', dbSetup.db1[1]._id);
+      assert.equals(dbSetup.db1[1]._id, '_design/content2_new');
       assert.defined(dbSetup.db1[1].views);
       assert.defined(dbSetup.db1[1].views.somename);
-      cb(undefined, {ok: true});
+      cb(null, {ok: true});
     };
     db.saveDocuments = function (dbSetup, cb) {
-      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.equals(dbSetup.db1[0]._id, '_design/content_new');
       assert.defined(dbSetup.db1[0].views);
       assert.defined(dbSetup.db1[0].views.somename);
-      assert.equals('_design/content2_new', dbSetup.db1[1]._id);
+      assert.equals(dbSetup.db1[1]._id, '_design/content2_new');
       assert.defined(dbSetup.db1[1].views);
       assert.defined(dbSetup.db1[1].views.somename);
-      cb(undefined, {ok: true});
+      cb(null, {ok: true});
     };
 
     db.liveDeployView(
@@ -447,7 +443,7 @@ buster.testCase('db - liveDeployView', {
           { _id: '_design/content',
             views: {
               somename: {
-                map: function(doc) { }
+                map: function (doc) { }
               }
             },
             lists: {},
@@ -458,7 +454,7 @@ buster.testCase('db - liveDeployView', {
           { _id: '_design/content2',
             views: {
               somename: {
-                map: function(doc) { }
+                map: function (doc) { }
               }
             },
             lists: {},
@@ -480,43 +476,39 @@ buster.testCase('db - liveDeployView', {
     this.mockConsole.expects('log').twice().withExactArgs('%s - view index updater running: %s', 'somename', false);
     var db = new Db('http://localhost:5984', {
       nano: this._mockNano(
-        // view
-        function(docid, viewName, opts, cb) {
-          cb(undefined, {_id: 'docA' });
+        function (docId, viewName, opts, cb) {
+          cb(null, {_id: 'docA' });
         }, 
-        //request
-        function(opts, cb) {
+        function (opts, cb) {
           var result = { name: 'somename', view_index: { updater_running: false } };
-          cb(undefined, result);
+          cb(null, result);
         },
-        //headCb 
-        function(docid, cb) {
+        function (docId, cb) {
           cb({err: 'conflict', status: '409'}, undefined, { some: 'headers' });
         },
-        //copyCb
-        function(docid, new_docid, opts, cb) {
-          cb(undefined, { message: 'success' });
+        function (docId, newDocId, opts, cb) {
+          cb(null, { message: 'success' });
         }
       ),
       interval: 1
     });
     db.removeDocuments = function (dbSetup, cb) {
-      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.equals(dbSetup.db1[0]._id, '_design/content_new');
       assert.defined(dbSetup.db1[0].views);
       assert.defined(dbSetup.db1[0].views.somename);
-      assert.equals('_design/content2_new', dbSetup.db1[1]._id);
+      assert.equals(dbSetup.db1[1]._id, '_design/content2_new');
       assert.defined(dbSetup.db1[1].views);
       assert.defined(dbSetup.db1[1].views.somename);
-      cb(undefined, {ok: true});
+      cb(null, {ok: true});
     };
     db.saveDocuments = function (dbSetup, cb) {
-      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.equals(dbSetup.db1[0]._id, '_design/content_new');
       assert.defined(dbSetup.db1[0].views);
       assert.defined(dbSetup.db1[0].views.somename);
-      assert.equals('_design/content2_new', dbSetup.db1[1]._id);
+      assert.equals(dbSetup.db1[1]._id, '_design/content2_new');
       assert.defined(dbSetup.db1[1].views);
       assert.defined(dbSetup.db1[1].views.somename);
-      cb(undefined, {ok: true});
+      cb(null, {ok: true});
     };
 
     db.liveDeployView(
@@ -558,43 +550,39 @@ buster.testCase('db - liveDeployView', {
     this.mockConsole.expects('log').twice().withExactArgs('%s - view index updater running: %s', 'somename', false);
     var db = new Db('http://localhost:5984', {
         nano: this._mockNano(
-          // view
-          function(docid, viewName, opts, cb) {
-            cb(undefined, {_id: 'docA' });
+          function (docId, viewName, opts, cb) {
+            cb(null, {_id: 'docA' });
           }, 
-          //request
-          function(opts, cb) {
+          function (opts, cb) {
             var result = { name: 'somename', view_index: { updater_running: false } };
-            cb(undefined, result);
+            cb(null, result);
           },
-          //headCb 
-          function(docid, cb) {
+          function (docId, cb) {
             cb({err: 'conflict', status: '409'}, undefined, { some: 'headers' });
           },
-          //copyCb
-          function(docid, new_docid, opts, cb) {
-            cb(undefined, { message: ' success' });
+          function (docId, newDocId, opts, cb) {
+            cb(null, { message: ' success' });
           }
         ),
         interval: 1
       });
     db.removeDocuments = function (dbSetup, cb) {
-      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.equals(dbSetup.db1[0]._id, '_design/content_new');
       assert.defined(dbSetup.db1[0].views);
       assert.defined(dbSetup.db1[0].views.somename);
-      assert.equals('_design/content2_new', dbSetup.db1[1]._id);
+      assert.equals(dbSetup.db1[1]._id, '_design/content2_new');
       assert.defined(dbSetup.db1[1].views);
       assert.defined(dbSetup.db1[1].views.somename);
-      cb(undefined, {ok: true});
+      cb(null, {ok: true});
     };
     db.saveDocuments = function (dbSetup, cb) {
-      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.equals(dbSetup.db1[0]._id, '_design/content_new');
       assert.defined(dbSetup.db1[0].views);
       assert.defined(dbSetup.db1[0].views.somename);
-      assert.equals('_design/content2_new', dbSetup.db1[1]._id);
+      assert.equals(dbSetup.db1[1]._id, '_design/content2_new');
       assert.defined(dbSetup.db1[1].views);
       assert.defined(dbSetup.db1[1].views.somename);
-      cb(undefined, {ok: true});
+      cb(null, {ok: true});
     };
 
     db.liveDeployView(
@@ -635,36 +623,32 @@ buster.testCase('db - liveDeployView', {
     this.mockConsole.expects('log').once().withExactArgs('%s - %s', '_design/content_new', {error: 'Not Found'});
     var db = new Db('http://localhost:5984', {
         nano: this._mockNano(
-          // view
-          function(docid, viewName, opts, cb) {
-            cb(undefined, {_id: 'docA' });
+          function (docId, viewName, opts, cb) {
+            cb(null, {_id: 'docA' });
           }, 
-          //request
-          function(opts, cb) {
+          function (opts, cb) {
             cb({error: 'Not Found'}, undefined);
           },
-          //headCb 
-          function(docid, cb) {
+          function (docId, cb) {
             cb({err: 'conflict', status: '409'}, undefined, { some: 'headers' });
           },
-          //copyCb
-          function(docid, new_docid, opts, cb) {
-            cb(undefined, { message: ' success' });
+          function (docId, newDocId, opts, cb) {
+            cb(null, { message: ' success' });
           }
         ),
         interval: 1
       });
     db.removeDocuments = function (dbSetup, cb) {
-      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.equals(dbSetup.db1[0]._id, '_design/content_new');
       assert.defined(dbSetup.db1[0].views);
       assert.defined(dbSetup.db1[0].views.somename);
-      cb(undefined, {ok: true});
+      cb(null, {ok: true});
     };
     db.saveDocuments = function (dbSetup, cb) {
-      assert.equals('_design/content_new', dbSetup.db1[0]._id);
+      assert.equals(dbSetup.db1[0]._id, '_design/content_new');
       assert.defined(dbSetup.db1[0].views);
       assert.defined(dbSetup.db1[0].views.somename);
-      cb(undefined, {ok: true});
+      cb(null, {ok: true});
     };
 
     db.liveDeployView(
