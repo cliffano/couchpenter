@@ -1,4 +1,7 @@
-### 0.2.3-pre
+### 0.2.4-pre
+*
+
+### 0.2.3
 * Add live-deploy-view target couchpenter#liveDeployView (Gary Chin)
 
 ### 0.2.2
