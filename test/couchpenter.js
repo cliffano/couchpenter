@@ -155,7 +155,7 @@ buster.testCase('couchpenter - task', {
   },
 
   'should call correct tasks for liveDeployView method': function (done) {
-    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } }),
+    var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } }, interval: 2000 }),
       self = this;
     couchpenter.liveDeployView(function (err, result) {
       assert.equals(self.calls.length, 1);
