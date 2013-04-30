@@ -127,7 +127,7 @@ Check out [lib/couchpenter](https://github.com/cliffano/couchpenter/blob/master/
 Configuration
 -------------
 
-Couchpenter setup file is a just a simple JSON file:
+Couchpenter setup file is just a simple JSON file:
 
     {
       "db1": [
