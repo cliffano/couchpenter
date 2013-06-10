@@ -1,5 +1,5 @@
 var _ = require ('underscore'),
-  bag = require('bagofholding'),
+  bag = require('bagofrequest'),
   buster = require('buster'),
   Db = require('../lib/db');
 
@@ -11,7 +11,7 @@ buster.testCase('db - db', {
         return { db: {} };
       };
     };
-    this.stub(bag, 'http', { proxy: function () { return 'http://someproxy'; }});
+    this.stub(bag, 'proxy', function () { return 'http://someproxy'; });
     new Db('http://localhost:5984', { nano: this._mockNano() });
   },
   'should not set request_defaults when there is no proxy environment variable': function () {
@@ -21,7 +21,7 @@ buster.testCase('db - db', {
         return { db: {} };
       };
     };
-    this.stub(bag, 'http', { proxy: function () { return null; }});
+    this.stub(bag, 'proxy', function () { return null; });
     new Db('http://localhost:5984', { nano: this._mockNano() });
   }
 });
