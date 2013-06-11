@@ -1,4 +1,7 @@
-### 0.2.4-pre
+### 0.2.5-pre
+*
+
+### 0.2.4
 * Ignore proxy when CouchDB URL hostname is either localhost or 127.0.0.1
 * Replace bagofholding with bagofcli and bagofrequest
 * Add parallel limit support to avoid too many parallel tasks running at the same time
