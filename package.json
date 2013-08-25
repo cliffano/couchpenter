@@ -30,18 +30,17 @@
     "test": "./test"
   },
   "dependencies": {
-    "async": "0.2.6",
-    "bagofcli": "0.0.1",
-    "bagofrequest": "0.0.3",
-    "clone": "0.1.6",
-    "cron": "1.0.1",
-    "fs.extra": "1.2.0",
-    "nano": "3.3.8",
-    "underscore": "1.4.4"
+    "async": "~0.2.9",
+    "bagofcli": "~0.0.5",
+    "bagofrequest": "~0.0.5",
+    "clone": "~0.1.10",
+    "cron": "~1.0.1",
+    "fs.extra": "~1.2.1",
+    "nano": "~4.1.1",
+    "underscore": "~1.5.1"
   },
   "devDependencies": {
-    "buster": "0.6.12",
-    "shelljs": "0.1.2"
+    "buster": "~0.6.12"
   },
   "scripts": {},
   "engines": {
