@@ -1,5 +1,5 @@
-var bag = require('bagofcli'),
-  buster = require('buster'),
+var buster = require('buster'),
+  _cli = require('bagofcli'),
   cli = require('../lib/cli'),
   Couchpenter = require('../lib/couchpenter');
 
@@ -24,18 +24,18 @@ buster.testCase('cli - exec', {
       assert.defined(actions.commands['live-deploy-view'].action);
       done();
     };
-    this.stub(bag, 'command', mockCommand);
+    this.stub(_cli, 'command', mockCommand);
     cli.exec();
   }
 });
 
 buster.testCase('cli - init', {
   'should contain init command and delegate to couchpenter init when exec is called': function (done) {
-    this.stub(bag, 'command', function (base, actions) {
+    this.stub(_cli, 'command', function (base, actions) {
       actions.commands.init.action();
     });
     this.stub(Couchpenter.prototype, 'init', function (cb) {
-      assert.equals(typeof bag.exit, 'function');
+      assert.equals(typeof _cli.exit, 'function');
       done();
     });
     cli.exec();
@@ -55,10 +55,10 @@ buster.testCase('cli - task', {
       self.stub(Couchpenter.prototype, couchpenterFn, function (cb) {
         cb(null, [{ id: 'id1', message: 'someresult1' }, { id: 'id2', message: 'someresult2', error: { status_code: 404 } }]);
       });
-      if (bag.command.restore) {
-        bag.command.restore();
+      if (_cli.command.restore) {
+        _cli.command.restore();
       }
-      self.stub(bag, 'command', function (base, actions) {
+      self.stub(_cli, 'command', function (base, actions) {
         actions.commands[command].action({ url: 'http://someurl', setupFile: 'somesetupfile', dir: 'somedir', interval: 2000 });
       });
       cli.exec();

@@ -1,7 +1,7 @@
 var _ = require ('underscore'),
-  bag = require('bagofrequest'),
   buster = require('buster'),
-  Db = require('../lib/db');
+  Db = require('../lib/db'),
+  req = require('bagofrequest');
 
 buster.testCase('db - db', {
   'should set proxy to nano when proxy environment variable is set': function () {
@@ -11,7 +11,7 @@ buster.testCase('db - db', {
         return { db: {} };
       };
     };
-    this.stub(bag, 'proxy', function () { return 'http://someproxy'; });
+    this.stub(req, 'proxy', function () { return 'http://someproxy'; });
     new Db('http://localhost:5984', { nano: this._mockNano() });
   },
   'should not set request_defaults when there is no proxy environment variable': function () {
@@ -21,7 +21,7 @@ buster.testCase('db - db', {
         return { db: {} };
       };
     };
-    this.stub(bag, 'proxy', function () { return null; });
+    this.stub(req, 'proxy', function () { return null; });
     new Db('http://localhost:5984', { nano: this._mockNano() });
   }
 });

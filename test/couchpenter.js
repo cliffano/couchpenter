@@ -1,5 +1,5 @@
-var bag = require('bagofcli'),
-  buster = require('buster'),
+var buster = require('buster'),
+  cli = require('bagofcli'),
   Couchpenter = require('../lib/couchpenter'),
   cron = require('cron'),
   Db = require('../lib/db'),
@@ -228,7 +228,7 @@ buster.testCase('couchpenter - _task', {
     });
   },
   'should fallback to optional setup file when setup object is not specified': function (done) {
-    this.stub(bag, 'lookupFile', function (file) {
+    this.stub(cli, 'lookupFile', function (file) {
         assert.equals(file, 'somefile.json');
         return '{ "db1": { "foo": "bar" }}';
       }
