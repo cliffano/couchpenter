@@ -1,6 +1,13 @@
-Couchpenter [![Build Status](https://secure.travis-ci.org/cliffano/couchpenter.png?branch=master)](http://travis-ci.org/cliffano/couchpenter) [![Dependencies Status](https://david-dm.org/cliffano/couchpenter.png)](http://david-dm.org/cliffano/couchpenter) [![Published Version](https://badge.fury.io/js/couchpenter.png)](http://badge.fury.io/js/couchpenter)
------------
 <img align="right" src="https://raw.github.com/cliffano/couchpenter/master/avatar.jpg" alt="Avatar"/>
+
+[![Build Status](https://secure.travis-ci.org/cliffano/couchpenter.png?branch=master)](http://travis-ci.org/cliffano/couchpenter)
+[![Dependencies Status](https://david-dm.org/cliffano/couchpenter.png)](http://david-dm.org/cliffano/couchpenter)
+[![Published Version](https://badge.fury.io/js/couchpenter.png)](http://badge.fury.io/js/couchpenter)
+<br/>
+[![npm Badge](https://nodei.co/npm/couchpenter.png)](http://npmjs.org/package/couchpenter)
+
+Couchpenter 
+-----------
 
 Couchpenter is a CouchDB database and document setup tool.
 
