@@ -5,4 +5,3 @@ node_js:
   - 0.8
 before_install: "npm install -g bob --loglevel error"
 script: "bob build"
-
