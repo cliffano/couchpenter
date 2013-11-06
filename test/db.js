@@ -1,7 +1,9 @@
 var _ = require ('lodash'),
-  buster = require('buster'),
+  buster = require('buster-node'),
   Db = require('../lib/db'),
-  req = require('bagofrequest');
+  referee = require('referee'),
+  req = require('bagofrequest'),
+  assert = referee.assert;
 
 buster.testCase('db - db', {
   'should set proxy to nano when proxy environment variable is set': function () {

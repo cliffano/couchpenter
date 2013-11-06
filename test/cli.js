@@ -1,7 +1,9 @@
-var buster = require('buster'),
+var buster = require('buster-node'),
   _cli = require('bagofcli'),
   cli = require('../lib/cli'),
-  Couchpenter = require('../lib/couchpenter');
+  Couchpenter = require('../lib/couchpenter'),
+  referee = require('referee'),
+  assert = referee.assert;
 
 buster.testCase('cli - exec', {
   'should contain commands with actions': function (done) {

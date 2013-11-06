@@ -1,10 +1,12 @@
-var buster = require('buster'),
+var buster = require('buster-node'),
   cli = require('bagofcli'),
   Couchpenter = require('../lib/couchpenter'),
   cron = require('cron'),
   Db = require('../lib/db'),
   fs = require('fs'),
-  fsx = require('fs.extra');
+  fsx = require('fs.extra'),
+  referee = require('referee'),
+  assert = referee.assert;
 
 buster.testCase('couchpenter - init', {
   setUp: function () {
