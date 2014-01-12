@@ -2,6 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/cliffano/couchpenter.png?branch=master)](http://travis-ci.org/cliffano/couchpenter)
 [![Dependencies Status](https://david-dm.org/cliffano/couchpenter.png)](http://david-dm.org/cliffano/couchpenter)
+[![Coverage Status](https://coveralls.io/repos/cliffano/couchpenter/badge.png?branch=master)](https://coveralls.io/r/cliffano/couchpenter?branch=master)
 [![Published Version](https://badge.fury.io/js/couchpenter.png)](http://badge.fury.io/js/couchpenter)
 <br/>
 [![npm Badge](https://nodei.co/npm/couchpenter.png)](http://npmjs.org/package/couchpenter)
