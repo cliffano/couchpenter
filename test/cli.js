@@ -61,7 +61,7 @@ buster.testCase('cli - task', {
         _cli.command.restore();
       }
       self.stub(_cli, 'command', function (base, actions) {
-        actions.commands[command].action({ url: 'http://someurl', setupFile: 'somesetupfile', dir: 'somedir', interval: 2000 });
+        actions.commands[command].action({ parent: { url: 'http://someurl', setupFile: 'somesetupfile', dir: 'somedir', interval: 2000 } });
       });
       cli.exec();
     };
