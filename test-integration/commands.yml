@@ -1,18 +1,20 @@
+- fixtures:
+    - test-integration/fixtures
+
+- params:
+    couchpenter: ../../../../../bin/couchpenter
+
 - description: Command help should display help information
-  command: ../../../../../bin/couchpenter --help
+  command: '{couchpenter} --help'
   exitcode: 0
   output: 'Usage: couchpenter'
 
 - description: Command init should create sample setup file
-  command: ../../../../../bin/couchpenter init
+  command: '{couchpenter} init'
   exitcode: 0
   output: 'Creating sample setup file: couchpenter.json'
 
-- description: Prepare custom setup file
-  command: cp ../../../../../test-integration/fixtures/somesetup.json ./
-  exitcode: 0
-
 - description: Command setup should fail when host does not exist
-  command: ../../../../../bin/couchpenter setup --setup-file somesetup.json --url http://user:pass@localhost:1234
+  command: '{couchpenter} setup --setup-file somesetup.json --url http://user:pass@localhost:1234'
   exitcode: 1
   output: error happened in your connection
