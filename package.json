@@ -30,14 +30,14 @@
     "test": "./test"
   },
   "dependencies": {
-    "async": "~0.2.9",
-    "bagofcli": "~0.0.8",
-    "bagofrequest": "~0.0.6",
-    "clone": "~0.1.11",
-    "cron": "~1.0.1",
+    "async": "~0.9.0",
+    "bagofcli": "~0.2.0",
+    "bagofrequest": "~0.1.0",
+    "clone": "~0.1.18",
+    "cron": "~1.0.4",
     "fs.extra": "~1.2.1",
     "lodash": "~2.4.1",
-    "nano": "~4.3.0"
+    "nano": "~5.11.0"
   },
   "devDependencies": {
     "buster-node": "~0.7.0",
