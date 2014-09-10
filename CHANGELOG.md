@@ -1,6 +1,6 @@
-### 0.2.5-pre
+### 0.3.0-pre
 * Change test lib to buster-node + referee
-* Set min node engine to >= v0.8.0
+* Set min node engine to >= v0.10.0
 
 ### 0.2.4
 * Ignore proxy when CouchDB URL hostname is either localhost or 127.0.0.1
