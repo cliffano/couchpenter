@@ -39,6 +39,7 @@ buster.testCase('couchpenter - task', {
     this.stub(Db.prototype, 'removeDocuments', function (data, cb) { self.calls.push('removeDocuments'); cb(); });
     this.stub(Db.prototype, 'warmViews', function (data, cb) { self.calls.push('warmViews'); cb(); });
     this.stub(Db.prototype, 'liveDeployView', function (data, cb) { self.calls.push('liveDeployView'); cb(); });
+    this.mock({});
     this.mockCron = this.mock(cron);
   },
   'should call correct tasks for setUp method': function (done) {
@@ -198,6 +199,9 @@ buster.testCase('couchpenter - task', {
 });
 
 buster.testCase('couchpenter - _task', {
+  setUp: function () {
+    this.mock({});
+  },
   'should use optional setup object when specified': function (done) {
     this.stub(Db.prototype, 'createDocuments', function (data, cb) {
       assert.equals(data.db1.foo, 'bar');

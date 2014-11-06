@@ -6,6 +6,9 @@ var _ = require ('lodash'),
   assert = referee.assert;
 
 buster.testCase('db - db', {
+  setUp: function () {
+    this.mock({});
+  },
   'should set proxy to nano when proxy environment variable is set': function () {
     this._mockNano = function () {
       return function (opts) {
@@ -30,6 +33,7 @@ buster.testCase('db - db', {
 
 buster.testCase('db - createDatabases', {
   setUp: function () {
+    this.mock({});
     this._mockNano = function (createCb) {
       return function (opts) {
         assert.equals(opts.url, 'http://localhost:5984');
@@ -69,6 +73,7 @@ buster.testCase('db - createDatabases', {
 
 buster.testCase('db - removeDatabases', {
   setUp: function () {
+    this.mock({});
     this._mockNano = function (destroyCb) {
       return function (url) {
         return { db: { destroy: destroyCb } };
@@ -107,6 +112,7 @@ buster.testCase('db - removeDatabases', {
 
 buster.testCase('db - cleanDatabases', {
   setUp: function () {
+    this.mock({});
     this._mockNano = function (listCb) {
       return function (url) {
         return { db: { list: listCb } };
@@ -154,6 +160,7 @@ buster.testCase('db - cleanDatabases', {
 
 buster.testCase('db - createDocuments', {
   setUp: function () {
+    this.mock({});
     this._mockNano = function (insertCb) {
       return function (url) {
         return { use: function (dbName) { return { insert: insertCb }; }};
@@ -196,6 +203,7 @@ buster.testCase('db - createDocuments', {
 
 buster.testCase('db - saveDocuments', {
   setUp: function () {
+    this.mock({});
     this._mockNano = function (insertCb, getCb) {
       return function (url) {
         return { use: function (dbName) { return { insert: insertCb, get: getCb }; }};
@@ -276,6 +284,7 @@ buster.testCase('db - saveDocuments', {
 
 buster.testCase('db - removeDocuments', {
   setUp: function () {
+    this.mock({});
     this._mockNano = function (getCb, destroyCb) {
       return function (url) {
         return { use: function (dbName) { return { get: getCb, destroy: destroyCb }; }};
@@ -329,6 +338,7 @@ buster.testCase('db - removeDocuments', {
 
 buster.testCase('db - warmViews', {
   setUp: function () {
+    this.mock({});
     this._mockNano = function (viewCb) {
       return function (url) {
         return { use: function (dbName) { return { view: viewCb }; }};
@@ -373,6 +383,7 @@ buster.testCase('db - warmViews', {
 
 buster.testCase('db - liveDeployView', {
   setUp: function () {
+    this.mock({});
     this.mockConsole = this.mock(console);
     this._mockNano = function (viewCb, requestCb, headCb, copyCb) {
       return function (url) {
@@ -683,6 +694,7 @@ buster.testCase('db - liveDeployView', {
 
 buster.testCase('db - _handle', {
   setUp: function () {
+    this.mock({});
     this.db = new Db('http://localhost:5984', { nano: function (url) {} });
   },
   'should return result object when there is no error': function (done) {

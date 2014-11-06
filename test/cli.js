@@ -26,6 +26,7 @@ buster.testCase('cli - exec', {
       assert.defined(actions.commands['live-deploy-view'].action);
       done();
     };
+    this.mock({});
     this.stub(_cli, 'command', mockCommand);
     cli.exec();
   }
@@ -33,6 +34,7 @@ buster.testCase('cli - exec', {
 
 buster.testCase('cli - init', {
   'should contain init command and delegate to couchpenter init when exec is called': function (done) {
+    this.mock({});
     this.stub(_cli, 'command', function (base, actions) {
       actions.commands.init.action();
     });
