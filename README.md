@@ -171,3 +171,8 @@ A document can be represented as:
 * a module path string
 
 Paths are relative to current directory if it's used from command-line, or relative to opts.dir if it's used programmatically (defaults to current directory if opts.dir is not specified).
+
+Colophon
+--------
+
+[Developer's Guide](http://cliffano.github.io/developers_guide.html#nodejs)
