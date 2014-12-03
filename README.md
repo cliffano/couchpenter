@@ -184,3 +184,7 @@ Build reports:
 * [Test coverage report](http://cliffano.github.io/couchpenter/bob/coverage/buster-istanbul/lcov-report/lib/index.html)
 * [Integration tests report](http://cliffano.github.io/couchpenter/bob/test-integration/cmdt.out)
 * [API Documentation](http://cliffano.github.io/couchpenter/bob/doc/dox-foundation/index.html)
+
+Related Projects:
+
+* [couchtato](http://github.com/cliffano/couchtato) - CouchDB documents iterator tool
