@@ -8,10 +8,10 @@
 * Add parallel limit support to avoid too many parallel tasks running at the same time
 
 ### 0.2.3
-* Add live-deploy-view target couchpenter#liveDeployView (Gary Chin)
+* Add live-deploy-view target couchpenter#liveDeployView [Gary Chin](https://github.com/garyc)
 
 ### 0.2.2
-* Add warm-view target with cron scheduling support via couchpenter#warmViews (Daniel Bell)
+* Add warm-view target with cron scheduling support via couchpenter#warmViews [Daniel Bell](https://github.com/danbell)
 
 ### 0.2.1
 * Add proxy support via http(s)_proxy environment variable
