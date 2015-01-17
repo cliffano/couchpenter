@@ -34,14 +34,14 @@
     "bagofcli": "~0.2.1",
     "bagofrequest": "~0.1.0",
     "clone": "~0.2.0",
-    "cron": "~1.0.5",
-    "fs.extra": "~1.2.1",
+    "cron": "~1.0.6",
+    "fs.extra": "~1.3.2",
     "lodash": "~2.4.1",
     "nano": "~6.0.2"
   },
   "devDependencies": {
     "buster-node": "~0.7.0",
-    "referee": "~1.1.0"
+    "referee": "~1.1.1"
   },
   "scripts": {},
   "engines": {
