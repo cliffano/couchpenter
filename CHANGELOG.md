@@ -33,7 +33,11 @@
 * Add dbSetup to Couchpenter opts to allow passing setup object as an alternative to passing setup file name
 
 ### 0.1.0
-* Re-release 0.0.8 as 0.1.0 due to interface change
+* Re-release 0.0.9 as 0.1.0 due to interface change
+
+### 0.0.9
+* Add db prefix [Daniel Whelan](https://github.com/chobomuffin)
+* Fix global leak via nano upgrade [Daniel Whelan](https://github.com/chobomuffin)
 
 ### 0.0.8
 * Add reset, reset-db, and reset-doc targets; add Couchpenter#reset method
