@@ -2,8 +2,8 @@
 
 [![Build Status](https://img.shields.io/travis/cliffano/couchpenter.svg)](http://travis-ci.org/cliffano/couchpenter)
 [![Dependencies Status](https://img.shields.io/david/cliffano/couchpenter.svg)](http://david-dm.org/cliffano/couchpenter)
-[![Coverage Status](https://coveralls.io/repos/cliffano/couchpenter/badge.png?branch=master)](https://coveralls.io/r/cliffano/couchpenter?branch=master)
-[![Published Version](https://badge.fury.io/js/couchpenter.png)](http://badge.fury.io/js/couchpenter)
+[![Coverage Status](https://img.shields.io/coveralls/cliffano/couchpenter.svg)](https://coveralls.io/r/cliffano/couchpenter?branch=master)
+[![Published Version](https://img.shields.io/npm/v/couchpenter.svg)](http://www.npmjs.com/package/couchpenter)
 <br/>
 [![npm Badge](https://nodei.co/npm/couchpenter.png)](http://npmjs.org/package/couchpenter)
 
