@@ -209,7 +209,7 @@ buster.testCase('couchpenter - _task', {
     });
     var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } });
     couchpenter._task(['createDocuments'], function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       done();
     });
   },
@@ -224,7 +224,7 @@ buster.testCase('couchpenter - _task', {
     });
     var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } });
     couchpenter._task(['removeDocuments', 'createDocuments'], function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       assert.equals(result.length, 2);
       assert.equals(result[0].id, 'id1');
       assert.equals(result[0].message, 'someresult1');
@@ -245,7 +245,7 @@ buster.testCase('couchpenter - _task', {
     });
     var couchpenter = new Couchpenter('http://somehost', { setupFile: 'somefile.json' });
     couchpenter._task(['createDocuments'], function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       done();
     });
   },
@@ -256,7 +256,7 @@ buster.testCase('couchpenter - _task', {
     });
     var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } });
     couchpenter._task(['createDatabases'], function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       done();
     });
   },
@@ -267,7 +267,7 @@ buster.testCase('couchpenter - _task', {
     });
     var couchpenter = new Couchpenter('http://somehost', { prefix: 'test1_', dbSetup: { db1: { foo: 'bar' } } });
     couchpenter._task(['createDatabases'], function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       done();
     });
   },
@@ -278,7 +278,7 @@ buster.testCase('couchpenter - _task', {
     });
     var couchpenter = new Couchpenter('http://somehost', { dbSetup: { db1: { foo: 'bar' } } });
     couchpenter._task(['createDocuments'], function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       done();
     });
   }

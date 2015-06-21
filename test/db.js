@@ -46,7 +46,7 @@ buster.testCase('db - createDatabases', {
       nano: this._mockNano(function (dbName, cb) { cb(null, { ok: 'true' }); })
     });
     db.createDatabases(['db1', 'db2'], function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       assert.equals(result.length, 2);
       assert.equals(result[0].id, 'db1');
       assert.equals(result[0].message, 'created');
@@ -60,7 +60,7 @@ buster.testCase('db - createDatabases', {
       nano: this._mockNano(function (dbName, cb) { cb({ status_code: 412, error: 'file_exists' }); })
     });
     db.createDatabases(['db1', 'db2'], function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       assert.equals(result.length, 2);
       assert.equals(result[0].id, 'db1');
       assert.equals(result[0].message, 'file_exists (412)');
@@ -85,7 +85,7 @@ buster.testCase('db - removeDatabases', {
       nano: this._mockNano(function (dbName, cb) { cb(null, { ok: 'true' }); })
     });
     db.removeDatabases(['db1', 'db2'], function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       assert.equals(result.length, 2);
       assert.equals(result[0].id, 'db1');
       assert.equals(result[0].message, 'deleted');
@@ -99,7 +99,7 @@ buster.testCase('db - removeDatabases', {
       nano: this._mockNano(function (dbName, cb) { cb({ status_code: 404, error: 'missing' }); })
     });
     db.removeDatabases(['db1', 'db2'], function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       assert.equals(result.length, 2);
       assert.equals(result[0].id, 'db1');
       assert.equals(result[0].message, 'missing (404)');
@@ -172,7 +172,7 @@ buster.testCase('db - createDocuments', {
       nano: this._mockNano(function (doc, cb) { cb(null, { ok: 'true' }); })
     });
     db.createDocuments({ db1: [{ _id: 'docA' }], db2: [{ _id: 'docB'}, { _id: 'docC'}] }, function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       assert.equals(result.length, 3);
       assert.equals(result[0].id, 'db1/docA');
       assert.equals(result[0].message, 'created');
@@ -188,7 +188,7 @@ buster.testCase('db - createDocuments', {
       nano: this._mockNano(function (doc, cb) { cb({ status_code: 409, error: 'conflict' }); })
     });
     db.createDocuments({ db1: [{ _id: 'docA' }], db2: [{ _id: 'docB'}, { _id: 'docC'}] }, function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       assert.equals(result.length, 3);
       assert.equals(result[0].id, 'db1/docA');
       assert.equals(result[0].message, 'conflict (409)');
@@ -215,7 +215,7 @@ buster.testCase('db - saveDocuments', {
       nano: this._mockNano(function (doc, cb) { cb(null, { ok: 'true' }); })
     });
     db.saveDocuments({ db1: [{ _id: 'docA' }], db2: [{ _id: 'docB'}, { _id: 'docC'}] }, function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       assert.equals(result.length, 3);
       assert.equals(result[0].id, 'db1/docA');
       assert.equals(result[0].message, 'created');
@@ -242,7 +242,7 @@ buster.testCase('db - saveDocuments', {
       )
     });
     db.saveDocuments({ db1: [{ _id: 'docA' }], db2: [{ _id: 'docB'}, { _id: 'docC'}] }, function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       assert.equals(result.length, 3);
       assert.equals(result[0].id, 'db1/docA');
       assert.equals(result[0].message, 'missing (404)');
@@ -269,7 +269,7 @@ buster.testCase('db - saveDocuments', {
       )
     });
     db.saveDocuments({ db1: [{ _id: 'docA' }], db2: [{ _id: 'docB'}, { _id: 'docC'}] }, function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       assert.equals(result.length, 3);
       assert.equals(result[0].id, 'db1/docA');
       assert.equals(result[0].message, 'updated');
@@ -303,7 +303,7 @@ buster.testCase('db - removeDocuments', {
       )
     });
     db.removeDocuments({ db1: [{ _id: 'docA' }], db2: [{ _id: 'docB'}, { _id: 'docC'}] }, function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       assert.equals(result.length, 3);
       assert.equals(result[0].id, 'db1/docA');
       assert.equals(result[0].message, 'deleted');
@@ -323,7 +323,7 @@ buster.testCase('db - removeDocuments', {
       )
     });
     db.removeDocuments({ db1: [{ _id: 'docA' }], db2: [{ _id: 'docB'}, { _id: 'docC'}] }, function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       assert.equals(result.length, 3);
       assert.equals(result[0].id, 'db1/docA');
       assert.equals(result[0].message, 'missing (404)');
@@ -350,7 +350,7 @@ buster.testCase('db - warmViews', {
       nano: this._mockNano()
     });
     db.warmViews({ db1: [{ _id: 'docA' } ] }, function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       assert.equals(result.length, 0);
       done();
     });
@@ -370,7 +370,7 @@ buster.testCase('db - warmViews', {
       });
     db.warmViews({ db1: [{ _id: 'docA' }, { _id: '_design/somedesigndoc', views: { view1: {}, view2: {} } } ] }, 
      function (err, result) {
-       assert.equals(err, undefined);
+       assert.equals(err, null);
        assert.equals(result.length, 1);
        assert.equals(result[0].id, 'db1/_design/somedesigndoc');
        assert.equals(result[0].message, 'warmed view1, view2');
@@ -407,7 +407,7 @@ buster.testCase('db - liveDeployView', {
       parallelLimit: 100
     });
     db.liveDeployView({ db1: [{ _id: 'docA' }]}, function (err, result) {
-      assert.equals(err, undefined);
+      assert.equals(err, null);
       assert.isTrue(_.isEmpty(result.length));
       done();
     });
@@ -479,7 +479,7 @@ buster.testCase('db - liveDeployView', {
         ] 
       }, 
      function (err, result) {
-       assert.equals(err, undefined);
+       assert.equals(err, null);
        assert.isFalse(_.isEmpty(result));
        assert.equals('view index has been kicked off', result[0][1][0].message);
        assert.equals('view index has been kicked off', result[0][1][1].message);
@@ -553,7 +553,7 @@ buster.testCase('db - liveDeployView', {
         ] 
       }, 
      function (err, result) {
-       assert.equals(err, undefined);
+       assert.equals(err, null);
        assert.isTrue(!_.isEmpty(result));
        assert.equals("success", result[0][3][0].message);
        assert.equals("success", result[0][3][1].message);
@@ -627,7 +627,7 @@ buster.testCase('db - liveDeployView', {
         ] 
       }, 
      function (err, result) {
-       assert.equals(err, undefined);
+       assert.equals(err, null);
        assert.isTrue(!_.isEmpty(result));
        assert.isTrue(result[0][4].ok);
        done();
@@ -682,7 +682,7 @@ buster.testCase('db - liveDeployView', {
         ] 
       }, 
      function (err, result) {
-       assert.equals(err, undefined);
+       assert.equals(err, null);
        assert.isTrue(!_.isEmpty(result));
        assert.isTrue(result[0][4].ok);
        done();
