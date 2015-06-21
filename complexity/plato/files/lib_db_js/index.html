@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - lib/db.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>lib/db.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">76.37</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">417</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">55.55</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">3.54</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">var _ = require(&#039;lodash&#039;),
+  async = require(&#039;async&#039;),
+  clone = require(&#039;clone&#039;),
+  nano = require(&#039;nano&#039;),
+  req = require(&#039;bagofrequest&#039;),
+  util = require(&#039;util&#039;);
+
+/**
+ * class Db
+ *
+ * CouchDB errors are camouflaged as results to allow multiple operations to resume
+ * even though there is an error encountered on at least one of the operations
+ * (e.g. database delete should not cause an error regardless whether the database already exists or not).
+ * Non-CouchDB errors (e.g. connection error) will still be passed via standard callback error.
+ *
+ * @param {String} url: CouchDB instance URL in format http(s)://user:pass@host:port
+ * @param {Object} opts: optional
+ * - interval: delay between index progress checks, defaults to 10000 ms
+ * - parallelLimit: max number of tasks can be run parallel, defaults to 50
+ * - nano: for test purpose only, temporary until I find a way to mock required function module using Sinon.js, resort to dependency injection for now
+ */
+function Db(url, opts) {
+  const INTERVAL = 10000,
+    PARALLEL_LIMIT = 50;
+
+  var couchOpts = { url: url },
+    envProxy = req.proxy(url);
+
+  if (envProxy) {
+    couchOpts.request_defaults = { proxy: envProxy };
+  }
+
+  this.couch = (opts &amp;&amp; opts.nano ? opts.nano : nano)(couchOpts);
+  this.interval = (opts &amp;&amp; opts.interval) ? opts.interval : INTERVAL;
+  this.parallelLimit = (opts &amp;&amp; opts.parallelLimit) ? opts.parallelLimit : PARALLEL_LIMIT;
+}
+
+/**
+ * Create inexisting databases.
+ *
+ * @param {Array} dbNames: name of databases
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.createDatabases = function (dbNames, cb) {
+  var self = this,
+    tasks = [];
+  dbNames.forEach(function (dbName) {
+    function task(cb) {
+      self.couch.db.create(dbName, self._handle(cb, {
+        dbName: dbName,
+        message: &#039;created&#039;
+      }));
+    }
+    tasks.push(task);
+  });
+  async.parallelLimit(tasks, this.parallelLimit, cb);
+};
+
+/**
+ * Delete existing databases.
+ *
+ * @param {Array} dbNames: name of databases
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.removeDatabases = function (dbNames, cb) {
+  var self = this,
+    tasks = [];
+  dbNames.forEach(function (dbName) {
+    function task(cb) {
+      self.couch.db.destroy(dbName, self._handle(cb, {
+        dbName: dbName,
+        message: &#039;deleted&#039;
+      }));
+    }
+    tasks.push(task);
+  });
+  async.parallelLimit(tasks, this.parallelLimit, cb);
+};
+
+/**
+ * Delete unknown databases (those not configured in setup file).
+ * NOTE: in CouchDB v1.2.0, _users database deletion does not trigger any error, but the _users database can&#039;t be deleted
+ *
+ * @param {Array} dbNames: name of databases
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.cleanDatabases = function (dbNames, cb) {
+  var self = this;
+  this.couch.db.list(function (err, result) {
+    if (err) {
+      cb(err);
+    } else {
+      var dbNamesToClean = [];
+      result.forEach(function (dbName) {
+        if (dbNames.indexOf(dbName) === -1) {
+          dbNamesToClean.push(dbName);
+        }
+      });
+      self.removeDatabases(dbNamesToClean, cb);
+    }
+  });
+};
+
+/**
+ * Create inexisting documents, leave existing documents untouched as conflict error.
+ *
+ * @param {Object} dbSetup: database setup, keys are database names, values are documents
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.createDocuments = function (dbSetup, cb) {
+  var self = this,
+    tasks = [];
+  _.keys(dbSetup).forEach(function (dbName) {
+    dbSetup[dbName].forEach(function (doc) {
+      function task(cb) {
+        self.couch.use(dbName).insert(doc, self._handle(cb, {
+          dbName: dbName,
+          docId: doc._id,
+          message: &#039;created&#039;
+        }));
+      }
+      tasks.push(task);
+    });
+  });
+  async.parallelLimit(tasks, this.parallelLimit, cb);
+};
+
+/**
+ * Create inexisting documents, update existing documents.
+ *
+ * @param {Object} dbSetup: database setup, keys are database names, values are documents
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.saveDocuments = function (dbSetup, cb) {
+  const CONFLICT = 409;
+  var self = this,
+    tasks = [];
+  _.keys(dbSetup).forEach(function (dbName) {
+    dbSetup[dbName].forEach(function (doc) {
+      function task(cb) {
+
+        // try to create documents, but with conflict error handling
+        function _errorCb(err, result) {
+
+          // if there is a conflict error, retrieve the document&#039;s revision first
+          function _successCb(err, result) {
+
+            // use the revision to update the existing documents
+            // NOTE: it is not impossible that the revision of this document
+            // is modified by other operations right before updating, Couchpenter
+            // will only try once to avoid any possibility of retrying infinitely.
+            doc._rev = result._rev;
+            self.couch.use(dbName).insert(doc, self._handle(cb, {
+              dbName: dbName,
+              docId: doc._id,
+              message: &#039;updated&#039;
+            }));
+          }
+
+          self.couch.use(dbName).get(doc._id, self._handle(cb, {
+            dbName: dbName,
+            docId: doc._id,
+            successCb: _successCb
+          }));
+        }
+
+        self.couch.use(dbName).insert(doc, self._handle(cb, {
+          dbName: dbName,
+          docId: doc._id,
+          message: &#039;created&#039;,
+          errorCb: _errorCb,
+          errorCode: CONFLICT
+        }));
+      }
+      tasks.push(task);
+    });
+  });
+  async.parallelLimit(tasks, this.parallelLimit, cb);
+};
+
+/**
+ * Delete existing documents.
+ *
+ * @param {Object} dbSetup: database setup, keys are database names, values are documents
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.removeDocuments = function (dbSetup, cb) {
+  var self = this,
+    tasks = [];
+  _.keys(dbSetup).forEach(function (dbName) {
+    dbSetup[dbName].forEach(function (doc) {
+      function task(cb) {
+
+        // retrieve the document revision and use it to delete the document
+        function _successCb(err, result) {
+
+          self.couch.use(dbName).destroy(result._id, result._rev, self._handle(cb, {
+            dbName: dbName,
+            docId: doc._id,
+            message: &#039;deleted&#039;
+          }));
+        }
+
+        self.couch.use(dbName).get(doc._id, self._handle(cb, {
+          dbName: dbName,
+          docId: doc._id,
+          successCb: _successCb
+        }));
+      }
+      tasks.push(task);
+    });
+  });
+  async.parallelLimit(tasks, this.parallelLimit, cb);
+};
+
+/**
+ * Warm views.
+ *
+ * @param {Object} dbSetup: database setup, keys are database names, values are documents
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.warmViews = function (dbSetup, cb) {
+  // retrieve no document to keep response size as minimum as possible
+  const NO_DOCS = 0;
+  var self = this,
+    tasks = [];
+  _.keys(dbSetup).forEach(function (dbName) {
+    dbSetup[dbName].forEach(function (doc) {
+      if (doc._id &amp;&amp; doc._id.match(/^_design\//) &amp;&amp; doc.views) {
+        tasks.push(function(cb) {
+
+          var _successCb = self._handle(cb, {
+            dbName: dbName,
+            docId: doc._id, 
+            message: &#039;warmed &#039; + _.keys(doc.views).join(&#039;, &#039;)
+          });
+
+          async.each(_.keys(doc.views), function (viewName, cb) {
+
+            self.couch.use(dbName).view(
+              doc._id.replace(&#039;_design/&#039;, &#039;&#039;),
+              viewName,
+              { limit: NO_DOCS },
+              cb);
+
+          }, _successCb);
+        });
+      }
+    });
+  });
+  async.parallelLimit(tasks, this.parallelLimit, cb);
+};
+
+/**
+ * Live deploy view changes
+ * https://wiki.apache.org/couchdb/How_to_deploy_view_changes_in_a_live_environment
+ *
+ * @param {Object} dbSetup: database setup, keys are database names, values are design documents
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.liveDeployView = function (dbSetup, cb) {
+  const POSTFIX = &#039;_new&#039;;
+  var self = this;
+
+  function _cloneSetup(dbSetup) {
+    var _clone = clone(dbSetup);
+    
+    _.keys(_clone).forEach(function (dbName) {
+      _clone[dbName].forEach(function (doc) {
+        if (doc._id &amp;&amp; doc._id.match(/^_design\//) &amp;&amp; doc.views) {
+          doc._id = doc._id + POSTFIX;
+        } else {
+          _clone[dbName].splice(_clone[dbName].indexOf(doc), 1);
+        }
+      });
+    });
+
+    return _clone;
+  }
+
+  function _startViewIndexTask(doc, dbName) {
+    const NO_DOCS = 0;
+    return function (cb) {
+      _.keys(doc.views).forEach(function (viewName) {
+        self.couch.use(dbName).view(
+          doc._id.replace(&#039;_design/&#039;, &#039;&#039;),
+          viewName,
+          { limit: NO_DOCS, stale: &#039;update_after&#039; },
+          function(err, result) {}
+        );
+      });
+      cb(null, { message: &#039;view index has been kicked off&#039; });  
+    };
+  }
+
+  function _indexProgressTask(doc, dbName) {
+    return function (cb) {           
+      var inProgress = true;
+      async.whilst(
+        function () { 
+          return inProgress; 
+        },
+        function (_cb) {
+          self.couch.request({
+              &#039;db&#039;: dbName, 
+              &#039;path&#039;: doc._id + &#039;/_info&#039; 
+            },
+            function(err, result) {
+              if (!err) {
+                inProgress = result.view_index.updater_running;
+                console.log(&#039;%s - view index updater running: %s&#039;, result.name, result.view_index.updater_running);
+              } else {
+                inProgress = false;
+                console.log(&#039;%s - %s&#039;, doc._id, err);
+              }
+            }
+          );
+          setTimeout(_cb, self.interval);
+        },
+        function (err) {
+          cb(err, {});
+        }
+      );
+    };
+  }
+
+  function _overwriteOldDesignDocTask(doc, dbName) {
+    return function (cb) {
+      function headCb(opts) {
+        self.couch.use(dbName).copy(
+          doc._id,
+          doc._id.replace(POSTFIX, &#039;&#039;), 
+          { overwrite: opts.update }, 
+          cb
+        );
+      }
+      self.couch.use(dbName).head(doc._id.replace(POSTFIX, &#039;&#039;), function(err, _, headers) {
+         if (!err) {
+          headCb({ update: true });
+        } else {
+          headCb({ update: false });
+        }
+      });
+    };
+  }
+
+  var dbSetupCopy = _cloneSetup(dbSetup),
+    seriesTasks = [],
+    viewIndexTasks = [], 
+    overwriteDocTasks = [], 
+    indexProgressTasks = [];
+
+  _.keys(dbSetupCopy).forEach(function (dbName) {
+    dbSetupCopy[dbName].forEach(function (doc) {
+      viewIndexTasks.push(_startViewIndexTask(doc, dbName));
+      indexProgressTasks.push(_indexProgressTask(doc, dbName));
+      overwriteDocTasks.push(_overwriteOldDesignDocTask(doc, dbName));
+    });
+
+    function _executeSeriesOfTasks(cb) {
+      async.series([ 
+        function (cb) { self.saveDocuments(dbSetupCopy, cb); }, 
+        function (cb) { async.parallelLimit(viewIndexTasks, self.parallelLimit, cb); }, 
+        function (cb) { async.parallelLimit(indexProgressTasks, self.parallelLimit, cb); }, 
+        function (cb) { async.parallelLimit(overwriteDocTasks, self.parallelLimit, cb); }, 
+        function (cb) { self.removeDocuments(dbSetupCopy, cb); }
+      ], cb);
+    }
+
+    seriesTasks.push(_executeSeriesOfTasks);
+  });
+
+  async.parallelLimit(seriesTasks, this.parallelLimit, cb);
+};
+
+
+Db.prototype._handle = function (cb, opts) {
+  var self = this;
+
+  // construct result object, the existence of error field indicates whether
+  // the result is a success or not
+  function _result(err, dbName, docId, message) {
+    var result = {
+      id: util.format(&#039;%s%s%s&#039;, dbName, (docId) ? &#039;/&#039; : &#039;&#039;, docId || &#039;&#039;),
+      message: message || util.format(&#039;%s (%s)&#039;, err.error, err.status_code)
+    };
+    if (err) {
+      result.error = err;
+    }
+    return result;
+  }
+
+  return function (err, result) {
+    if (err) {
+      // special status code, delegate to error callback
+      if (opts.errorCb &amp;&amp; err.status_code === opts.errorCode) {
+        opts.errorCb(err, result);
+      // CouchDB error is camouflaged as result (status_code field is set by nano)
+      } else if (err.status_code) {
+        cb(null, _result(err, opts.dbName, opts.docId));
+      // standard error (e.g. connection refused) is passed as standard error
+      } else {
+        cb(err);
+      }
+    } else {
+      // delegate to success callback
+      if (opts.successCb) {
+        opts.successCb(err, result);
+      // standard success
+      } else {
+        cb(null, _result(null, opts.dbName, opts.docId, opts.message));
+      }
+    }
+  };
+};
+
+module.exports = Db;</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

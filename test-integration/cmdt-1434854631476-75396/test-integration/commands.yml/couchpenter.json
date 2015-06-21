@@ -1,0 +1,12 @@
+{
+  "db1": [
+    { "_id": "doc1", "foo": "bar" },
+    { "_id": "doc2", "foo": "bar" },
+    "path/to/doc3file.json"
+  ],
+  "db2": [
+    { "_id": "doc4", "foo": "bar" },
+    "path/to/modulename"
+  ],
+  "db3": []
+}

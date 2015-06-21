@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - lib/couchpenter.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>lib/couchpenter.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">78.46</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">256</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">37.78</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">1.64</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">var _ = require(&#039;lodash&#039;),
+  async = require(&#039;async&#039;),
+  cli = require(&#039;bagofcli&#039;),
+  cron = require(&#039;cron&#039;),
+  Db = require(&#039;./db&#039;),
+  fs = require(&#039;fs&#039;),
+  fsx = require(&#039;fs.extra&#039;),
+  p = require(&#039;path&#039;);
+
+/**
+ * class Couchpenter
+ *
+ * @param {String} url: CouchDB URL in format http(s)://user:pass@host:port, fallback to COUCHDB_URL environment variable, default to http://localhost:5984
+ * @param {Object} opts: optional
+ * - setupFile: Couchpenter setup file
+ * - dir: documents directory
+ * - prefix: prefix for database names
+ * - dbSetup: Couchpenter database setup object
+ */
+function Couchpenter(url, opts) {
+  opts = opts || {};
+
+  this.url = url || process.env.COUCHDB_URL || &#039;http://localhost:5984&#039;;
+  this.opts = {
+    setupFile: opts.setupFile || &#039;couchpenter.json&#039;,
+    dir: opts.dir || process.cwd(),
+    prefix: opts.prefix,
+    setup: opts.dbSetup,
+    interval: opts.interval
+  };
+}
+
+/**
+ * Create a sample couchpenter.json setup file in current working directory.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.init = function (cb) {
+  console.log(&#039;Creating sample setup file: couchpenter.json&#039;);
+  fsx.copy(p.join(__dirname, &#039;../examples/couchpenter.json&#039;), &#039;couchpenter.json&#039;, cb);
+};
+
+// NOTE: pardon this method to tasks mapping,
+// needed to preserve backward compatibility w/ v0.1.x
+
+/**
+ * Create databases and documents, overwrite if documents exist.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.setUp = function (cb) {
+  this._task([&#039;createDatabases&#039;, &#039;saveDocuments&#039;], cb);
+};
+
+/**
+ * Create databases only.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.setUpDatabases = function (cb) {
+  this._task([&#039;createDatabases&#039;], cb);
+};
+
+/**
+ * Create documents only, does not overwrite if exist.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.setUpDocuments = function (cb) {
+  this._task([&#039;createDocuments&#039;], cb);
+};
+
+/**
+ * Create documents only, overwrite if exist.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.setUpDocumentsOverwrite = function (cb) {
+  this._task([&#039;saveDocuments&#039;], cb);
+};
+
+/**
+ * Alias for tearDownDatabases.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.tearDown = function (cb) {
+  this.tearDownDatabases(cb);
+};
+
+/**
+ * Delete databases.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.tearDownDatabases = function (cb) {
+  this._task([&#039;removeDatabases&#039;], cb);
+};
+
+/**
+ * Delete documents.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.tearDownDocuments = function (cb) {
+  this._task([&#039;removeDocuments&#039;], cb);
+};
+
+/**
+ * Alias for resetDocuments.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.reset = function (cb) {
+  this.resetDocuments(cb);
+};
+
+/**
+ * Delete then recreate databases.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.resetDatabases = function (cb) {
+  this._task([&#039;removeDatabases&#039;, &#039;createDatabases&#039;], cb);
+};
+
+/**
+ * Delete then recreate documents only.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.resetDocuments = function (cb) {
+  this._task([&#039;removeDatabases&#039;, &#039;createDatabases&#039;, &#039;createDocuments&#039;], cb);
+};
+
+/**
+ * Alias for cleanDatabases.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.clean = function (cb) {
+  this.cleanDatabases(cb);
+};
+
+/**
+ * Delete unknown databases (not configured in setup file).
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.cleanDatabases = function (cb) {
+  this._task([&#039;cleanDatabases&#039;], cb);
+};
+
+/**
+ * Warm up views specified in design documents.
+ * If schedule is specified, then views warm up will be scheduled using cron.
+ * Otherwise, it&#039;s just a once off.
+ * 
+ * @param {String} schedule: cron scheduling definition in standard * * * * * format
+ * @param {Function} cb: standard cb(err, result) callback
+ */ 
+Couchpenter.prototype.warmViews = function(schedule, cb) {
+  var self = this;
+  if (cb) {
+    new cron.CronJob(
+      schedule,
+      function () {
+          self._task([&#039;warmViews&#039;], cb);
+      },
+      function () {
+        cb(null, {
+          id: &#039;couchpenter&#039;,
+          message: &#039;stopped views warm up schedule&#039;
+        });
+      },
+      true);
+  } else {
+    cb = schedule;
+    this._task([&#039;warmViews&#039;], cb);
+  }
+};
+
+/**
+ * Get view index progress for Db specified
+ * 
+ */
+Couchpenter.prototype.liveDeployView = function (cb) {
+  this._task([&#039;liveDeployView&#039;], cb);
+};
+
+/**
+ * Execute database tasks in series order.
+ *
+ * @param {Array} tasks: the tasks to execute
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype._task = function (tasks, cb) {  
+  var setup = this.opts.setup || JSON.parse(cli.lookupFile(this.opts.setupFile)),
+    db = new Db(this.url, { interval: this.opts.interval }),
+    asyncTasks = [],
+    self = this;
+
+  // prefix database names if optional prefix is specified
+  if (this.opts.prefix) {
+    _.keys(setup).forEach(function (dbName) {
+      setup[self.opts.prefix + dbName] = setup[dbName];
+      delete setup[dbName];
+    });
+  }
+
+  tasks.forEach(function (taskName) {
+    asyncTasks.push(function (cb) {
+      var data = (taskName.match(/Databases$/)) ?  _.keys(setup) : self._docs(setup, self.opts.dir);
+      db[taskName](data, cb);
+    });
+  });
+
+  async.series(asyncTasks, function (err, results) {
+    var combined = [];
+    results.forEach(function (result) {
+      combined = combined.concat(result);
+    });
+    cb(err, combined);
+  });
+};
+
+/**
+ * Process documents in Couchpenter setup:
+ * - if it&#039;s an object, leave as-is
+ * - if it&#039;s a json file location (ending with .json) then assign the content of the file as the document
+ * - otherwise assume it&#039;s a module, and require it
+ * Location of file and module is relative to this.opts.dir .
+ *
+ * @param {Object} setup: Couchpenter setup
+ * @param {String} dir: base directory relative to file location
+ * @return {Object} setup with documents processed
+ */
+Couchpenter.prototype._docs = function (setup, dir) {
+  _.keys(setup).forEach(function (dbName) {
+    for (var i = 0, ln = setup[dbName].length; i &lt; ln; i += 1) {
+      var item = setup[dbName][i];
+      if (_.isString(item)) {
+        if (item.match(/\.json$/)) {
+          setup[dbName][i] = JSON.parse(fs.readFileSync(p.join(dir, item)));
+        } else {
+          setup[dbName][i] = require(p.join(dir, item));
+        }
+      } else if (!Array.isArray(item) &amp;&amp; !_.isObject(item)) {
+        throw new Error(&#039;Invalid document &#039; + item + &#039; in db &#039; + dbName + &#039;, only object and string allowed&#039;);
+      }
+    }
+  });
+  return setup;
+};
+
+module.exports = Couchpenter;</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

@@ -1,0 +1,1296 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for lib/db.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../prettify.css">
+    <link rel="stylesheet" href="../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header high">
+    <h1>Code coverage report for <span class="entity">lib/db.js</span></h1>
+    <h2>
+        Statements: <span class="metric">100% <small>(147 / 147)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">100% <small>(50 / 50)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">100% <small>(59 / 59)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">100% <small>(147 / 147)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../index.html">All files</a> &#187; <a href="index.html">lib/</a> &#187; db.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">49</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">49</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">49</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">49</span>
+<span class="cline-any cline-yes">49</span>
+<span class="cline-any cline-yes">49</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">44</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">32</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">32</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">32</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">44</span>
+<span class="cline-any cline-yes">44</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var _ = require('lodash'),
+  async = require('async'),
+  clone = require('clone'),
+  nano = require('nano'),
+  req = require('bagofrequest'),
+  util = require('util');
+&nbsp;
+/**
+ * class Db
+ *
+ * CouchDB errors are camouflaged as results to allow multiple operations to resume
+ * even though there is an error encountered on at least one of the operations
+ * (e.g. database delete should not cause an error regardless whether the database already exists or not).
+ * Non-CouchDB errors (e.g. connection error) will still be passed via standard callback error.
+ *
+ * @param {String} url: CouchDB instance URL in format http(s)://user:pass@host:port
+ * @param {Object} opts: optional
+ * - interval: delay between index progress checks, defaults to 10000 ms
+ * - parallelLimit: max number of tasks can be run parallel, defaults to 50
+ * - nano: for test purpose only, temporary until I find a way to mock required function module using Sinon.js, resort to dependency injection for now
+ */
+function Db(url, opts) {
+  const INTERVAL = 10000,
+    PARALLEL_LIMIT = 50;
+&nbsp;
+  var couchOpts = { url: url },
+    envProxy = req.proxy(url);
+&nbsp;
+  if (envProxy) {
+    couchOpts.request_defaults = { proxy: envProxy };
+  }
+&nbsp;
+  this.couch = (opts &amp;&amp; opts.nano ? opts.nano : nano)(couchOpts);
+  this.interval = (opts &amp;&amp; opts.interval) ? opts.interval : INTERVAL;
+  this.parallelLimit = (opts &amp;&amp; opts.parallelLimit) ? opts.parallelLimit : PARALLEL_LIMIT;
+}
+&nbsp;
+/**
+ * Create inexisting databases.
+ *
+ * @param {Array} dbNames: name of databases
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.createDatabases = function (dbNames, cb) {
+  var self = this,
+    tasks = [];
+  dbNames.forEach(function (dbName) {
+    function task(cb) {
+      self.couch.db.create(dbName, self._handle(cb, {
+        dbName: dbName,
+        message: 'created'
+      }));
+    }
+    tasks.push(task);
+  });
+  async.parallelLimit(tasks, this.parallelLimit, cb);
+};
+&nbsp;
+/**
+ * Delete existing databases.
+ *
+ * @param {Array} dbNames: name of databases
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.removeDatabases = function (dbNames, cb) {
+  var self = this,
+    tasks = [];
+  dbNames.forEach(function (dbName) {
+    function task(cb) {
+      self.couch.db.destroy(dbName, self._handle(cb, {
+        dbName: dbName,
+        message: 'deleted'
+      }));
+    }
+    tasks.push(task);
+  });
+  async.parallelLimit(tasks, this.parallelLimit, cb);
+};
+&nbsp;
+/**
+ * Delete unknown databases (those not configured in setup file).
+ * NOTE: in CouchDB v1.2.0, _users database deletion does not trigger any error, but the _users database can't be deleted
+ *
+ * @param {Array} dbNames: name of databases
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.cleanDatabases = function (dbNames, cb) {
+  var self = this;
+  this.couch.db.list(function (err, result) {
+    if (err) {
+      cb(err);
+    } else {
+      var dbNamesToClean = [];
+      result.forEach(function (dbName) {
+        if (dbNames.indexOf(dbName) === -1) {
+          dbNamesToClean.push(dbName);
+        }
+      });
+      self.removeDatabases(dbNamesToClean, cb);
+    }
+  });
+};
+&nbsp;
+/**
+ * Create inexisting documents, leave existing documents untouched as conflict error.
+ *
+ * @param {Object} dbSetup: database setup, keys are database names, values are documents
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.createDocuments = function (dbSetup, cb) {
+  var self = this,
+    tasks = [];
+  _.keys(dbSetup).forEach(function (dbName) {
+    dbSetup[dbName].forEach(function (doc) {
+      function task(cb) {
+        self.couch.use(dbName).insert(doc, self._handle(cb, {
+          dbName: dbName,
+          docId: doc._id,
+          message: 'created'
+        }));
+      }
+      tasks.push(task);
+    });
+  });
+  async.parallelLimit(tasks, this.parallelLimit, cb);
+};
+&nbsp;
+/**
+ * Create inexisting documents, update existing documents.
+ *
+ * @param {Object} dbSetup: database setup, keys are database names, values are documents
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.saveDocuments = function (dbSetup, cb) {
+  const CONFLICT = 409;
+  var self = this,
+    tasks = [];
+  _.keys(dbSetup).forEach(function (dbName) {
+    dbSetup[dbName].forEach(function (doc) {
+      function task(cb) {
+&nbsp;
+        // try to create documents, but with conflict error handling
+        function _errorCb(err, result) {
+&nbsp;
+          // if there is a conflict error, retrieve the document's revision first
+          function _successCb(err, result) {
+&nbsp;
+            // use the revision to update the existing documents
+            // NOTE: it is not impossible that the revision of this document
+            // is modified by other operations right before updating, Couchpenter
+            // will only try once to avoid any possibility of retrying infinitely.
+            doc._rev = result._rev;
+            self.couch.use(dbName).insert(doc, self._handle(cb, {
+              dbName: dbName,
+              docId: doc._id,
+              message: 'updated'
+            }));
+          }
+&nbsp;
+          self.couch.use(dbName).get(doc._id, self._handle(cb, {
+            dbName: dbName,
+            docId: doc._id,
+            successCb: _successCb
+          }));
+        }
+&nbsp;
+        self.couch.use(dbName).insert(doc, self._handle(cb, {
+          dbName: dbName,
+          docId: doc._id,
+          message: 'created',
+          errorCb: _errorCb,
+          errorCode: CONFLICT
+        }));
+      }
+      tasks.push(task);
+    });
+  });
+  async.parallelLimit(tasks, this.parallelLimit, cb);
+};
+&nbsp;
+/**
+ * Delete existing documents.
+ *
+ * @param {Object} dbSetup: database setup, keys are database names, values are documents
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.removeDocuments = function (dbSetup, cb) {
+  var self = this,
+    tasks = [];
+  _.keys(dbSetup).forEach(function (dbName) {
+    dbSetup[dbName].forEach(function (doc) {
+      function task(cb) {
+&nbsp;
+        // retrieve the document revision and use it to delete the document
+        function _successCb(err, result) {
+&nbsp;
+          self.couch.use(dbName).destroy(result._id, result._rev, self._handle(cb, {
+            dbName: dbName,
+            docId: doc._id,
+            message: 'deleted'
+          }));
+        }
+&nbsp;
+        self.couch.use(dbName).get(doc._id, self._handle(cb, {
+          dbName: dbName,
+          docId: doc._id,
+          successCb: _successCb
+        }));
+      }
+      tasks.push(task);
+    });
+  });
+  async.parallelLimit(tasks, this.parallelLimit, cb);
+};
+&nbsp;
+/**
+ * Warm views.
+ *
+ * @param {Object} dbSetup: database setup, keys are database names, values are documents
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.warmViews = function (dbSetup, cb) {
+  // retrieve no document to keep response size as minimum as possible
+  const NO_DOCS = 0;
+  var self = this,
+    tasks = [];
+  _.keys(dbSetup).forEach(function (dbName) {
+    dbSetup[dbName].forEach(function (doc) {
+      if (doc._id &amp;&amp; doc._id.match(/^_design\//) &amp;&amp; doc.views) {
+        tasks.push(function(cb) {
+&nbsp;
+          var _successCb = self._handle(cb, {
+            dbName: dbName,
+            docId: doc._id, 
+            message: 'warmed ' + _.keys(doc.views).join(', ')
+          });
+&nbsp;
+          async.each(_.keys(doc.views), function (viewName, cb) {
+&nbsp;
+            self.couch.use(dbName).view(
+              doc._id.replace('_design/', ''),
+              viewName,
+              { limit: NO_DOCS },
+              cb);
+&nbsp;
+          }, _successCb);
+        });
+      }
+    });
+  });
+  async.parallelLimit(tasks, this.parallelLimit, cb);
+};
+&nbsp;
+/**
+ * Live deploy view changes
+ * https://wiki.apache.org/couchdb/How_to_deploy_view_changes_in_a_live_environment
+ *
+ * @param {Object} dbSetup: database setup, keys are database names, values are design documents
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Db.prototype.liveDeployView = function (dbSetup, cb) {
+  const POSTFIX = '_new';
+  var self = this;
+&nbsp;
+  function _cloneSetup(dbSetup) {
+    var _clone = clone(dbSetup);
+    
+    _.keys(_clone).forEach(function (dbName) {
+      _clone[dbName].forEach(function (doc) {
+        if (doc._id &amp;&amp; doc._id.match(/^_design\//) &amp;&amp; doc.views) {
+          doc._id = doc._id + POSTFIX;
+        } else {
+          _clone[dbName].splice(_clone[dbName].indexOf(doc), 1);
+        }
+      });
+    });
+&nbsp;
+    return _clone;
+  }
+&nbsp;
+  function _startViewIndexTask(doc, dbName) {
+    const NO_DOCS = 0;
+    return function (cb) {
+      _.keys(doc.views).forEach(function (viewName) {
+        self.couch.use(dbName).view(
+          doc._id.replace('_design/', ''),
+          viewName,
+          { limit: NO_DOCS, stale: 'update_after' },
+          function(err, result) {}
+        );
+      });
+      cb(null, { message: 'view index has been kicked off' });  
+    };
+  }
+&nbsp;
+  function _indexProgressTask(doc, dbName) {
+    return function (cb) {           
+      var inProgress = true;
+      async.whilst(
+        function () { 
+          return inProgress; 
+        },
+        function (_cb) {
+          self.couch.request({
+              'db': dbName, 
+              'path': doc._id + '/_info' 
+            },
+            function(err, result) {
+              if (!err) {
+                inProgress = result.view_index.updater_running;
+                console.log('%s - view index updater running: %s', result.name, result.view_index.updater_running);
+              } else {
+                inProgress = false;
+                console.log('%s - %s', doc._id, err);
+              }
+            }
+          );
+          setTimeout(_cb, self.interval);
+        },
+        function (err) {
+          cb(err, {});
+        }
+      );
+    };
+  }
+&nbsp;
+  function _overwriteOldDesignDocTask(doc, dbName) {
+    return function (cb) {
+      function headCb(opts) {
+        self.couch.use(dbName).copy(
+          doc._id,
+          doc._id.replace(POSTFIX, ''), 
+          { overwrite: opts.update }, 
+          cb
+        );
+      }
+      self.couch.use(dbName).head(doc._id.replace(POSTFIX, ''), function(err, _, headers) {
+         if (!err) {
+          headCb({ update: true });
+        } else {
+          headCb({ update: false });
+        }
+      });
+    };
+  }
+&nbsp;
+  var dbSetupCopy = _cloneSetup(dbSetup),
+    seriesTasks = [],
+    viewIndexTasks = [], 
+    overwriteDocTasks = [], 
+    indexProgressTasks = [];
+&nbsp;
+  _.keys(dbSetupCopy).forEach(function (dbName) {
+    dbSetupCopy[dbName].forEach(function (doc) {
+      viewIndexTasks.push(_startViewIndexTask(doc, dbName));
+      indexProgressTasks.push(_indexProgressTask(doc, dbName));
+      overwriteDocTasks.push(_overwriteOldDesignDocTask(doc, dbName));
+    });
+&nbsp;
+    function _executeSeriesOfTasks(cb) {
+      async.series([ 
+        function (cb) { self.saveDocuments(dbSetupCopy, cb); }, 
+        function (cb) { async.parallelLimit(viewIndexTasks, self.parallelLimit, cb); }, 
+        function (cb) { async.parallelLimit(indexProgressTasks, self.parallelLimit, cb); }, 
+        function (cb) { async.parallelLimit(overwriteDocTasks, self.parallelLimit, cb); }, 
+        function (cb) { self.removeDocuments(dbSetupCopy, cb); }
+      ], cb);
+    }
+&nbsp;
+    seriesTasks.push(_executeSeriesOfTasks);
+  });
+&nbsp;
+  async.parallelLimit(seriesTasks, this.parallelLimit, cb);
+};
+&nbsp;
+&nbsp;
+Db.prototype._handle = function (cb, opts) {
+  var self = this;
+&nbsp;
+  // construct result object, the existence of error field indicates whether
+  // the result is a success or not
+  function _result(err, dbName, docId, message) {
+    var result = {
+      id: util.format('%s%s%s', dbName, (docId) ? '/' : '', docId || ''),
+      message: message || util.format('%s (%s)', err.error, err.status_code)
+    };
+    if (err) {
+      result.error = err;
+    }
+    return result;
+  }
+&nbsp;
+  return function (err, result) {
+    if (err) {
+      // special status code, delegate to error callback
+      if (opts.errorCb &amp;&amp; err.status_code === opts.errorCode) {
+        opts.errorCb(err, result);
+      // CouchDB error is camouflaged as result (status_code field is set by nano)
+      } else if (err.status_code) {
+        cb(null, _result(err, opts.dbName, opts.docId));
+      // standard error (e.g. connection refused) is passed as standard error
+      } else {
+        cb(err);
+      }
+    } else {
+      // delegate to success callback
+      if (opts.successCb) {
+        opts.successCb(err, result);
+      // standard success
+      } else {
+        cb(null, _result(null, opts.dbName, opts.docId, opts.message));
+      }
+    }
+  };
+};
+&nbsp;
+module.exports = Db;
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Jun 21 2015 12:43:50 GMT+1000 (AEST)</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

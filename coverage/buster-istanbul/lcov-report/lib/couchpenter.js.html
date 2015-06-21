@@ -1,0 +1,813 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for lib/couchpenter.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../prettify.css">
+    <link rel="stylesheet" href="../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header high">
+    <h1>Code coverage report for <span class="entity">lib/couchpenter.js</span></h1>
+    <h2>
+        Statements: <span class="metric">100% <small>(69 / 69)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">100% <small>(25 / 25)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">100% <small>(26 / 26)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">100% <small>(69 / 69)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../index.html">All files</a> &#187; <a href="index.html">lib/</a> &#187; couchpenter.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">41</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41</span>
+<span class="cline-any cline-yes">41</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">28</span>
+<span class="cline-any cline-yes">28</span>
+<span class="cline-any cline-yes">28</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">28</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var _ = require('lodash'),
+  async = require('async'),
+  cli = require('bagofcli'),
+  cron = require('cron'),
+  Db = require('./db'),
+  fs = require('fs'),
+  fsx = require('fs.extra'),
+  p = require('path');
+&nbsp;
+/**
+ * class Couchpenter
+ *
+ * @param {String} url: CouchDB URL in format http(s)://user:pass@host:port, fallback to COUCHDB_URL environment variable, default to http://localhost:5984
+ * @param {Object} opts: optional
+ * - setupFile: Couchpenter setup file
+ * - dir: documents directory
+ * - prefix: prefix for database names
+ * - dbSetup: Couchpenter database setup object
+ */
+function Couchpenter(url, opts) {
+  opts = opts || {};
+&nbsp;
+  this.url = url || process.env.COUCHDB_URL || 'http://localhost:5984';
+  this.opts = {
+    setupFile: opts.setupFile || 'couchpenter.json',
+    dir: opts.dir || process.cwd(),
+    prefix: opts.prefix,
+    setup: opts.dbSetup,
+    interval: opts.interval
+  };
+}
+&nbsp;
+/**
+ * Create a sample couchpenter.json setup file in current working directory.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.init = function (cb) {
+  console.log('Creating sample setup file: couchpenter.json');
+  fsx.copy(p.join(__dirname, '../examples/couchpenter.json'), 'couchpenter.json', cb);
+};
+&nbsp;
+// NOTE: pardon this method to tasks mapping,
+// needed to preserve backward compatibility w/ v0.1.x
+&nbsp;
+/**
+ * Create databases and documents, overwrite if documents exist.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.setUp = function (cb) {
+  this._task(['createDatabases', 'saveDocuments'], cb);
+};
+&nbsp;
+/**
+ * Create databases only.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.setUpDatabases = function (cb) {
+  this._task(['createDatabases'], cb);
+};
+&nbsp;
+/**
+ * Create documents only, does not overwrite if exist.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.setUpDocuments = function (cb) {
+  this._task(['createDocuments'], cb);
+};
+&nbsp;
+/**
+ * Create documents only, overwrite if exist.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.setUpDocumentsOverwrite = function (cb) {
+  this._task(['saveDocuments'], cb);
+};
+&nbsp;
+/**
+ * Alias for tearDownDatabases.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.tearDown = function (cb) {
+  this.tearDownDatabases(cb);
+};
+&nbsp;
+/**
+ * Delete databases.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.tearDownDatabases = function (cb) {
+  this._task(['removeDatabases'], cb);
+};
+&nbsp;
+/**
+ * Delete documents.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.tearDownDocuments = function (cb) {
+  this._task(['removeDocuments'], cb);
+};
+&nbsp;
+/**
+ * Alias for resetDocuments.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.reset = function (cb) {
+  this.resetDocuments(cb);
+};
+&nbsp;
+/**
+ * Delete then recreate databases.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.resetDatabases = function (cb) {
+  this._task(['removeDatabases', 'createDatabases'], cb);
+};
+&nbsp;
+/**
+ * Delete then recreate documents only.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.resetDocuments = function (cb) {
+  this._task(['removeDatabases', 'createDatabases', 'createDocuments'], cb);
+};
+&nbsp;
+/**
+ * Alias for cleanDatabases.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.clean = function (cb) {
+  this.cleanDatabases(cb);
+};
+&nbsp;
+/**
+ * Delete unknown databases (not configured in setup file).
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype.cleanDatabases = function (cb) {
+  this._task(['cleanDatabases'], cb);
+};
+&nbsp;
+/**
+ * Warm up views specified in design documents.
+ * If schedule is specified, then views warm up will be scheduled using cron.
+ * Otherwise, it's just a once off.
+ * 
+ * @param {String} schedule: cron scheduling definition in standard * * * * * format
+ * @param {Function} cb: standard cb(err, result) callback
+ */ 
+Couchpenter.prototype.warmViews = function(schedule, cb) {
+  var self = this;
+  if (cb) {
+    new cron.CronJob(
+      schedule,
+      function () {
+          self._task(['warmViews'], cb);
+      },
+      function () {
+        cb(null, {
+          id: 'couchpenter',
+          message: 'stopped views warm up schedule'
+        });
+      },
+      true);
+  } else {
+    cb = schedule;
+    this._task(['warmViews'], cb);
+  }
+};
+&nbsp;
+/**
+ * Get view index progress for Db specified
+ * 
+ */
+Couchpenter.prototype.liveDeployView = function (cb) {
+  this._task(['liveDeployView'], cb);
+};
+&nbsp;
+/**
+ * Execute database tasks in series order.
+ *
+ * @param {Array} tasks: the tasks to execute
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Couchpenter.prototype._task = function (tasks, cb) {  
+  var setup = this.opts.setup || JSON.parse(cli.lookupFile(this.opts.setupFile)),
+    db = new Db(this.url, { interval: this.opts.interval }),
+    asyncTasks = [],
+    self = this;
+&nbsp;
+  // prefix database names if optional prefix is specified
+  if (this.opts.prefix) {
+    _.keys(setup).forEach(function (dbName) {
+      setup[self.opts.prefix + dbName] = setup[dbName];
+      delete setup[dbName];
+    });
+  }
+&nbsp;
+  tasks.forEach(function (taskName) {
+    asyncTasks.push(function (cb) {
+      var data = (taskName.match(/Databases$/)) ?  _.keys(setup) : self._docs(setup, self.opts.dir);
+      db[taskName](data, cb);
+    });
+  });
+&nbsp;
+  async.series(asyncTasks, function (err, results) {
+    var combined = [];
+    results.forEach(function (result) {
+      combined = combined.concat(result);
+    });
+    cb(err, combined);
+  });
+};
+&nbsp;
+/**
+ * Process documents in Couchpenter setup:
+ * - if it's an object, leave as-is
+ * - if it's a json file location (ending with .json) then assign the content of the file as the document
+ * - otherwise assume it's a module, and require it
+ * Location of file and module is relative to this.opts.dir .
+ *
+ * @param {Object} setup: Couchpenter setup
+ * @param {String} dir: base directory relative to file location
+ * @return {Object} setup with documents processed
+ */
+Couchpenter.prototype._docs = function (setup, dir) {
+  _.keys(setup).forEach(function (dbName) {
+    for (var i = 0, ln = setup[dbName].length; i &lt; ln; i += 1) {
+      var item = setup[dbName][i];
+      if (_.isString(item)) {
+        if (item.match(/\.json$/)) {
+          setup[dbName][i] = JSON.parse(fs.readFileSync(p.join(dir, item)));
+        } else {
+          setup[dbName][i] = require(p.join(dir, item));
+        }
+      } else if (!Array.isArray(item) &amp;&amp; !_.isObject(item)) {
+        throw new Error('Invalid document ' + item + ' in db ' + dbName + ', only object and string allowed');
+      }
+    }
+  });
+  return setup;
+};
+&nbsp;
+module.exports = Couchpenter;
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Jun 21 2015 12:43:50 GMT+1000 (AEST)</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
